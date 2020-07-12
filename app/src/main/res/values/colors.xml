@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="blue_700">#344955</color>
+    <color name="blue_800">#232f34</color>
+    <color name="blue_600">#4a6572</color>
 
-    <color name="textColor">#FFFFFF</color>
+    <color name="orange_700">#f9aa33</color>
+    <color name="orange_800">#c17b00</color>
+    <color name="orange_600">#ffdc65</color>
+
+    <color name="primaryTextColor">#FFFFFF</color>
+    <color name="secondaryTextColor">#000000</color>
 
     <color name="state_unknown">#78909C</color>
     <color name="state_connected">#0097A7</color>
@@ -15,4 +20,5 @@
     <color name="log_debug">#EEEEEE</color>
     <color name="log_warning">#E57373</color>
     <color name="log_error">#F44336</color>
+
 </resources>

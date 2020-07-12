@@ -18,7 +18,10 @@ interface OnDeviceClicked {
  * [RecyclerView.Adapter] that can display [Devices].
  *
  */
-class MyDevicesRecyclerViewAdapter(private val values: List<Devices>, val listener: OnDeviceClicked) : RecyclerView.Adapter<MyDevicesRecyclerViewAdapter.ViewHolder>() {
+class MyDevicesRecyclerViewAdapter(
+    private val values: List<Devices>,
+    val listener: OnDeviceClicked
+) : RecyclerView.Adapter<MyDevicesRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,7 +32,7 @@ class MyDevicesRecyclerViewAdapter(private val values: List<Devices>, val listen
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (values.isNotEmpty()) {
             val item = values[position]
-
+            holder.bind(device = item)
         }
     }
 
@@ -37,5 +40,8 @@ class MyDevicesRecyclerViewAdapter(private val values: List<Devices>, val listen
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        fun bind(device: Devices) {
+
+        }
     }
 }
