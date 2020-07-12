@@ -4,4 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="splash_logo">Alahram Logo</string>
     <string name="transitionName">logo Transition</string>
+    <string name="login_continue">Continue</string>
+    <string name="login_your_name">Your Name</string>
+    <string name="login_hello">Hello,</string>
 </resources>

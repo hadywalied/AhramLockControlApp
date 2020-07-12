@@ -12,9 +12,7 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import timber.log.Timber
 
-import timber.log.Timber.DebugTree
 
 
 open class BaseActivity : AppCompatActivity() {
