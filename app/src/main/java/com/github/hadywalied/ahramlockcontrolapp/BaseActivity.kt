@@ -12,7 +12,8 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -26,10 +27,12 @@ open class BaseActivity : AppCompatActivity() {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
+    private lateinit var disposables: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
 //        Timber.plant(DebugTree())
+        init()
     }
 
     override fun onStart() {
@@ -81,5 +84,24 @@ open class BaseActivity : AppCompatActivity() {
 
     protected val BluetoothAdapter.isDisabled: Boolean
         get() = !isEnabled
+
+    private fun init() {
+        initRx()
+    }
+
+    private fun initRx() {
+        disposables = CompositeDisposable()
+    }
+
+    @Synchronized
+    protected fun addDisposable(disposable: Disposable?) {
+        if (disposable == null) return
+        disposables.add(disposable)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!disposables.isDisposed) disposables.dispose()
+    }
 
 }

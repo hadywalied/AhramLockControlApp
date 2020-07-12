@@ -2,6 +2,7 @@ package com.github.hadywalied.ahramlockcontrolapp
 
 import android.os.Bundle
 import timber.log.Timber
+import com.jakewharton.rxbinding4.*
 
 class MainActivity : BaseActivity() {
 
@@ -11,5 +12,6 @@ class MainActivity : BaseActivity() {
         Timber.plant(Timber.DebugTree())
         Timber.tag(tag)
         Timber.d("App Created")
+
     }
 }
