@@ -7,4 +7,6 @@
     <string name="login_continue">Continue</string>
     <string name="login_your_name">Your Name</string>
     <string name="login_hello">Hello,</string>
+    <string name="sharedprefsfile">bleuser</string>
+    <string name="username">username</string>
 </resources>

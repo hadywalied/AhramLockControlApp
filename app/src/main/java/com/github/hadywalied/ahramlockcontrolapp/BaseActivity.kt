@@ -43,7 +43,7 @@ open class BaseActivity : AppCompatActivity() {
                 REQUEST_CODE_REQUIRED_PERMISSIONS
             )
         }
-
+        init()
     }
 
     override fun onResume() {

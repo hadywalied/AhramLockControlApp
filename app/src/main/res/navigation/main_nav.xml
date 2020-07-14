@@ -16,16 +16,17 @@
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true" />
-        <action
-            android:id="@+id/action_splashFragment_to_userDevicesFragment"
-            app:destination="@id/userDevicesFragment"
-            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_userDevicesFragment"
+            app:destination="@id/userDevicesFragment"
+            app:launchSingleTop="true" />
+    </fragment>
     <fragment
         android:id="@+id/userDevicesFragment"
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userdevices.UserDevicesFragment"

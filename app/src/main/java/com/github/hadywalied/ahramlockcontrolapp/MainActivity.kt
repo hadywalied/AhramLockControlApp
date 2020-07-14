@@ -12,6 +12,5 @@ class MainActivity : BaseActivity() {
         Timber.plant(Timber.DebugTree())
         Timber.tag(tag)
         Timber.d("App Created")
-
     }
 }

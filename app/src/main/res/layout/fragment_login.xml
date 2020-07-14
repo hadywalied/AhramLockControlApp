@@ -47,13 +47,14 @@
                 android:textSize="32sp" />
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/et_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:inputType="textPersonName"
-                android:hint="@string/login_your_name" />
+                android:hint="@string/login_your_name"
+                android:inputType="textPersonName" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.github.hadywalied.ahramlockcontrolapp.LoadingButton
                 android:id="@+id/btn_continue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

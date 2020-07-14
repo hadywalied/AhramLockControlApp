@@ -2,8 +2,8 @@ package com.github.hadywalied.ahramlockcontrolapp
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 
 open class BaseFragment : Fragment() {
     private lateinit var disposables: CompositeDisposable
