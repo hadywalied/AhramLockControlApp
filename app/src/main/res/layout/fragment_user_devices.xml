@@ -23,5 +23,15 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+    <!--TODO finish the layout-->
+    <include
+        android:id="@+id/no_devices"
+        layout="@layout/no_devices_found_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
