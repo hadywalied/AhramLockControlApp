@@ -51,5 +51,7 @@
 
     <string name="state_connecting">Connecting…</string>
     <string name="state_initializing">Initializing…</string>
+    <string name="sucess">Sucess</string>
+    <string name="action_failed">Failed</string>
 
 </resources>

@@ -12,7 +12,7 @@
         android:layout_height="250dp"
         android:layout_gravity="center"
         android:contentDescription="@string/splash_logo"
-        android:src="@drawable/ic_bluetooth_rssi"
+        android:src="@drawable/ahram"
         android:transitionName="@string/transitionName" />
 
 </FrameLayout>

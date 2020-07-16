@@ -16,6 +16,9 @@
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_scanningFragment"
+            app:destination="@id/scanningFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -23,9 +26,8 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_userDevicesFragment"
-            app:destination="@id/userDevicesFragment"
-            app:launchSingleTop="true" />
+            android:id="@+id/action_loginFragment_to_scanningFragment"
+            app:destination="@id/scanningFragment" />
     </fragment>
     <fragment
         android:id="@+id/userDevicesFragment"

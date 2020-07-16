@@ -26,7 +26,7 @@ class LoginFragment : BaseFragment() {
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         val username = shareprefs?.getString(getString(R.string.username), "")
         if (username?.isNotEmpty()!! || username.isNotBlank())
-            findNavController().navigate(R.id.action_loginFragment_to_userDevicesFragment)
+            findNavController().navigate(R.id.action_loginFragment_to_scanningFragment)
     }
 
     override fun onCreateView(
@@ -46,7 +46,7 @@ class LoginFragment : BaseFragment() {
                     this?.putString(getString(R.string.username), et_username.text.toString())
                     this?.commit()
                 }
-                findNavController().navigate(R.id.action_loginFragment_to_userDevicesFragment)
+                findNavController().navigate(R.id.action_loginFragment_to_scanningFragment)
             }
         })
     }

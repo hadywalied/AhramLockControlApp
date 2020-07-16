@@ -2,28 +2,20 @@
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:motion="http://schemas.android.com/apk/res-auto">
 
-    <Transition
-        motion:constraintSetStart="@+id/start"
-        motion:constraintSetEnd="@+id/end"
-        motion:duration="1000">
-        <OnSwipe
-            motion:touchAnchorId="@+id/button"
-            motion:touchAnchorSide="right"
-            motion:dragDirection="dragRight" />
-    </Transition>
-
     <ConstraintSet android:id="@+id/start">
         <Constraint
             android:id="@+id/button"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" >
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintVertical_bias="0.5">
             <CustomAttribute
-                motion:attributeName="backgroundColor"
-                motion:customColorValue="@color/orange_700" />
+                motion:attributeName="Crossfade"
+                motion:customFloatValue="0" />
         </Constraint>
     </ConstraintSet>
 
@@ -32,16 +24,24 @@
             android:id="@+id/button"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginEnd="36dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginRight="32dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="36dp"
-            motion:layout_constraintVertical_bias="0.932">
+            motion:layout_constraintVertical_bias="0.5">
             <CustomAttribute
-                motion:attributeName="backgroundColor"
-                motion:customColorValue="@color/blue_700" />
+                motion:attributeName="Crossfade"
+                motion:customFloatValue="1" />
         </Constraint>
     </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/end"
+        motion:autoTransition="animateToStart" />
+    <Transition
+        motion:constraintSetStart="@+id/end"
+        motion:constraintSetEnd="@+id/start"
+        motion:autoTransition="animateToEnd" />
 
 </MotionScene>
