@@ -13,33 +13,44 @@ class UtilsKtTest {
     fun `test constructSendCommand() returns E for false command`() {
         assertEquals("E", constructSendCommand("FalseArgument"))
     }
+
     @Test
     fun `test constructSendCommand() returns (Connect,UserMAC) for connect command`() {
-        assertEquals("Connect,XX:XX:XX:XX", constructSendCommand("Connect","XX:XX:XX:XX"))
+        assertEquals("Connect,XX:XX:XX:XX", constructSendCommand("Connect", "XX:XX:XX:XX"))
     }
+
     @Test
     fun `test constructSendCommand() returns (AddUser,UserName,UserMAC) for AddUser command`() {
-        assertEquals("AddUser,Hady,XX:XX:XX:XX", constructSendCommand("AddUser","Hady","XX:XX:XX:XX"))
+        assertEquals(
+            "AddUser,Hady,XX:XX:XX:XX",
+            constructSendCommand("AddUser", "Hady", "XX:XX:XX:XX")
+        )
     }
+
     @Test
     fun `test constructSendCommand() returns (RmUser,UserMAC) for RmUser command`() {
-        assertEquals("RmUser,XX:XX:XX:XX", constructSendCommand("RmUser","XX:XX:XX:XX"))
+        assertEquals("RmUser,XX:XX:XX:XX", constructSendCommand("RmUser", "XX:XX:XX:XX"))
     }
+
     @Test
     fun `test constructSendCommand() returns (Lock,UserMAC) for Lock command`() {
-        assertEquals("Lock,XX:XX:XX:XX", constructSendCommand("Lock","XX:XX:XX:XX"))
+        assertEquals("Lock,XX:XX:XX:XX", constructSendCommand("Lock", "XX:XX:XX:XX"))
     }
+
     @Test
     fun `test constructSendCommand() returns (UnLock,UserMAC) for UnLock command`() {
-        assertEquals("UnLock,XX:XX:XX:XX", constructSendCommand("UnLock","XX:XX:XX:XX"))
+        assertEquals("UnLock,XX:XX:XX:XX", constructSendCommand("UnLock", "XX:XX:XX:XX"))
     }
+
     @Test
     fun `test constructSendCommand() returns (GetRecords) for GetRecords command`() {
         assertEquals("GetRecords", constructSendCommand("GetRecords"))
     }
-    @Test
-    fun `test constructSendCommand() returns (Sync,DateTime) for Sync command`() {
-        assertEquals("Sync,${LocalDateTime.now()}", constructSendCommand("Sync",LocalDateTime.now().toString()))
-    }
 
+
+    @Test
+    fun `test string format conversion to localdatetime`() {
+        val string = "180128130853"
+        assertEquals(LocalDateTime.parse("2018-01-28T13:08:53"), string.toLocalDateTime(string))
+    }
 }
