@@ -49,11 +49,13 @@
         <action
             android:id="@+id/action_controlPanelFragment_to_recordsFragment"
             app:destination="@id/recordsFragment"
+            app:launchSingleTop="false"
             app:popUpTo="@id/controlPanelFragment"
             app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_controlPanelFragment_to_basicInfoFragment"
             app:destination="@id/basicInfoFragment"
+            app:launchSingleTop="false"
             app:popUpTo="@id/controlPanelFragment"
             app:popUpToInclusive="false" />
     </fragment>

@@ -1,6 +1,7 @@
 package com.github.hadywalied.ahramlockcontrolapp
 
 import android.app.Application
+import android.bluetooth.BluetoothDevice
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
@@ -60,13 +61,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 var bool = false
                 for (dev in devicesItems) {
-                    if (dev.device.address == result.device.address) {
+                    if (dev.address == result.device.address) {
                         dev.rssi = result.rssi
                         bool = true
                     }
                 }
                 if (!bool) {
-                    devicesItems.add(Devices(result.device, result.rssi))
+                    devicesItems.add(
+                        Devices(
+                            result.device.address,
+                            result.device.name,
+                            result.rssi
+                        )
+                    )
                 }
                 _allBluetoothDevicesLiveData.postValue(devicesItems)
                 Timber.d("onScanResult() returned: $result")
@@ -82,8 +89,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }, 7500)
     }
 
-    fun connect(device: Devices) {
-        myBleManager.connect(device.device)
+    fun connect(device: BluetoothDevice) {
+        myBleManager.connect(device)
             .useAutoConnect(true)
             .retry(3, 100)
             .enqueue()
