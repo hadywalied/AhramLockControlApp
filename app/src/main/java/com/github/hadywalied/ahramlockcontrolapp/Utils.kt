@@ -3,6 +3,8 @@ package com.github.hadywalied.ahramlockcontrolapp
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.lang.StringBuilder
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 // IGNORE This One
 fun ByteArray.toHex(): String {
@@ -81,5 +83,15 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "E"
         }
     }
+}
 
+@RequiresApi(Build.VERSION_CODES.O)
+fun String.toLocalDateTime(customFormat: String): LocalDateTime {
+    val string = "20${customFormat[0]}${customFormat[1]}" +
+            "-${customFormat[2]}${customFormat[3]}-" +
+            "${customFormat[4]}${customFormat[5]}" +
+            "T${customFormat[6]}${customFormat[7]}:" +
+            "${customFormat[8]}${customFormat[9]}:" +
+            "${customFormat[10]}${customFormat[11]}"
+    return LocalDateTime.parse(string)
 }

@@ -16,9 +16,6 @@
             app:enterAnim="@anim/fragment_open_enter"
             app:exitAnim="@anim/fragment_open_exit"
             app:launchSingleTop="true" />
-        <action
-            android:id="@+id/action_splashFragment_to_scanningFragment"
-            app:destination="@id/scanningFragment" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -51,10 +48,14 @@
             app:destination="@id/userDevicesFragment" />
         <action
             android:id="@+id/action_controlPanelFragment_to_recordsFragment"
-            app:destination="@id/recordsFragment" />
+            app:destination="@id/recordsFragment"
+            app:popUpTo="@id/controlPanelFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_controlPanelFragment_to_basicInfoFragment"
-            app:destination="@id/basicInfoFragment" />
+            app:destination="@id/basicInfoFragment"
+            app:popUpTo="@id/controlPanelFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/scanningFragment"
@@ -63,7 +64,8 @@
         tools:layout="@layout/scanning_fragment" >
         <action
             android:id="@+id/action_scanningFragment_to_userDevicesFragment"
-            app:destination="@id/userDevicesFragment" />
+            app:destination="@id/userDevicesFragment"
+            app:popUpTo="@id/scanningFragment" />
     </fragment>
     <fragment
         android:id="@+id/recordsFragment"

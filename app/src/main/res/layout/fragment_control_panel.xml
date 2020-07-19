@@ -32,6 +32,34 @@
                 app:subtitleTextColor="@color/secondaryTextColor"
                 app:title="Device Name"
                 app:titleTextColor="@color/primaryTextColor" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="32dp"
+                android:theme="@style/Theme.PopupOverlay"
+                android:orientation="horizontal"
+                app:layout_collapseMode="parallax">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_admins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Admins Control" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_nfc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NFC Cards" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_basic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Basic Info" />
+            </com.google.android.material.chip.ChipGroup>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

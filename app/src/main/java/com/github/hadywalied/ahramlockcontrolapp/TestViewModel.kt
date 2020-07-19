@@ -3,14 +3,15 @@ package com.github.hadywalied.ahramlockcontrolapp
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import no.nordicsemi.android.support.v18.scanner.*
+import timber.log.Timber
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
+    //region date links
     val devicesItems = arrayListOf<Devices>()
 
     private val _allBluetoothDevicesLiveData = MutableLiveData<List<Devices>>()
@@ -30,6 +31,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     val managerLiveData = myBleManager.liveData
 
+    //endregion
+
+    // region Bluetooth Functions
     fun scan() {
         _loadingLiveData.postValue(true)
         devicesItems.clear()
@@ -65,7 +69,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                     devicesItems.add(Devices(result.device, result.rssi))
                 }
                 _allBluetoothDevicesLiveData.postValue(devicesItems)
-                Log.d(tag, "onScanResult() returned: $result")
+                Timber.d("onScanResult() returned: $result")
                 _scanFailedLiveData.postValue(false)
                 super.onScanResult(callbackType, result)
             }
@@ -94,6 +98,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             myBleManager.sendData(string)
         }
     }
+//endregion
 
     override fun onCleared() {
         super.onCleared()

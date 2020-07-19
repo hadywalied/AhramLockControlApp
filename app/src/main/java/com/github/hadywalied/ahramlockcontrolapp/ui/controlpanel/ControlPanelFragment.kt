@@ -46,6 +46,9 @@ class ControlPanelFragment : BaseFragment() {
         addDisposable(fab_records.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
             findNavController().navigate(R.id.action_controlPanelFragment_to_recordsFragment)
         })
+        addDisposable(chip_basic.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
+            findNavController().navigate(R.id.action_controlPanelFragment_to_basicInfoFragment)
+        })
 
     }
 
