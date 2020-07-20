@@ -21,7 +21,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:elevation="8dp"
+            android:elevation="0dp"
             android:orientation="horizontal"
             app:cardCornerRadius="8dp">
 
@@ -32,28 +32,21 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/item_name"
+                    android:id="@+id/device_item_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="Name"
-                    android:textSize="16sp" />
+                    android:textSize="28sp" />
 
                 <TextView
-                    android:id="@+id/item_mac"
+                    android:id="@+id/device_item_mac"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="mac"
-                    android:textSize="12sp" />
+                    android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/item_isconnected"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Connection"
-                    android:textSize="8sp" />
             </LinearLayout>
 
 
@@ -66,7 +59,7 @@
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:elevation="8dp"
+            android:elevation="0dp"
             android:orientation="horizontal"
             app:cardCornerRadius="8dp">
 
@@ -83,17 +76,17 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/rssi_text"
+                        android:id="@+id/rssi_item_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
                         android:text="signal strength"
-                        android:textSize="12sp" />
+                        android:textSize="16sp" />
 
                     <ImageView
-                        android:id="@+id/rssi_icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:id="@+id/rssi_item_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="end|center_vertical"
                         android:src="@drawable/ic_bluetooth_rssi"
                         android:tint="@color/state_unknown" />

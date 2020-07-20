@@ -6,6 +6,7 @@ import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.Records
 import kotlinx.coroutines.*
 
+//region DAOs
 @Dao
 interface RecordsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -29,7 +30,9 @@ interface DevicesDAO {
     @Delete
     suspend fun deleteDevice(device: Devices)
 }
+//endregion
 
+//region repos
 class RecordsRepo(val recordsDao: RecordsDAO) {
     companion object {
         @Volatile
@@ -101,7 +104,9 @@ class DevicesRepo(val devicesDAO: DevicesDAO) {
         return@runBlocking list
     }
 }
+//endregion
 
+//region ROOM DB
 @Database(
     entities = [Records::class, Devices::class],
     version = 1,
@@ -129,3 +134,5 @@ abstract class RoomDB : RoomDatabase() {
                 .build()
     }
 }
+
+//endregion

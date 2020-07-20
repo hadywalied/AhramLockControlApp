@@ -15,11 +15,12 @@ class ScanningFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
         return inflater.inflate(R.layout.scanning_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
     }
 }

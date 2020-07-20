@@ -13,7 +13,7 @@ import timber.log.Timber
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     //region date links
-    val devicesItems = arrayListOf<Devices>()
+    private val devicesItems = arrayListOf<Devices>()
 
     private val _allBluetoothDevicesLiveData = MutableLiveData<List<Devices>>()
     val allBluetoothDevicesLiveData: LiveData<List<Devices>>
