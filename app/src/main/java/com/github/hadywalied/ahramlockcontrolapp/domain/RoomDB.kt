@@ -54,12 +54,10 @@ class RecordsRepo(val recordsDao: RecordsDAO) {
         }
     }
 
-    fun getAll() = runBlocking {
-        var list = mutableListOf<Records>()
-        CoroutineScope(Dispatchers.IO).launch {
-            list = recordsDao.getRecords() as MutableList<Records>
+    suspend fun getAll(): List<Records> {
+        CoroutineScope(Dispatchers.IO).run {
+            return recordsDao.getRecords()
         }
-        return@runBlocking list
     }
 
     fun deleteAll() {
@@ -96,12 +94,10 @@ class DevicesRepo(val devicesDAO: DevicesDAO) {
         }
     }
 
-    fun getAll(): List<Devices> = runBlocking {
-        var list = mutableListOf<Devices>()
-        CoroutineScope(Dispatchers.IO).launch {
-            list = devicesDAO.getDevices() as MutableList<Devices>
+    suspend fun getAll(): List<Devices> {
+        CoroutineScope(Dispatchers.IO).run {
+            return devicesDAO.getDevices()
         }
-        return@runBlocking list
     }
 }
 //endregion
@@ -109,7 +105,7 @@ class DevicesRepo(val devicesDAO: DevicesDAO) {
 //region ROOM DB
 @Database(
     entities = [Records::class, Devices::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class RoomDB : RoomDatabase() {
@@ -130,7 +126,8 @@ abstract class RoomDB : RoomDatabase() {
             Room.databaseBuilder(
                 context.applicationContext,
                 RoomDB::class.java, "AhramApp.db"
-            )
+            ).setJournalMode(JournalMode.TRUNCATE)
+
                 .build()
     }
 }

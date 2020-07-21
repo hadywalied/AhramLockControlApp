@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
@@ -7,13 +7,16 @@ import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.github.hadywalied.ahramlockcontrolapp.Devices
+import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager
 import no.nordicsemi.android.support.v18.scanner.*
 import timber.log.Timber
 
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     //region date links
-    private val devicesItems = arrayListOf<Devices>()
+    val devicesItems = arrayListOf<Devices>()
+    val devicesSet = mutableMapOf<String, BluetoothDevice>()
 
     private val _allBluetoothDevicesLiveData = MutableLiveData<List<Devices>>()
     val allBluetoothDevicesLiveData: LiveData<List<Devices>>
@@ -23,14 +26,23 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val scanFailedLiveData: LiveData<Boolean>
         get() = _scanFailedLiveData
 
+    private val _connectFailedLiveData = MutableLiveData(false)
+    val connectFailedLiveData: LiveData<Boolean>
+        get() = _connectFailedLiveData
+
+    private val _connectionStateLiveData = MutableLiveData<String>()
+    val connectionStateLiveData: LiveData<String>
+        get() = _connectionStateLiveData
+
     private val _loadingLiveData = MutableLiveData(false)
     val loadingLiveData: LiveData<Boolean>
         get() = _loadingLiveData
 
 
-    private val myBleManager = MyBleManager(app)
+    private val myBleManager =
+        MyBleManager(app)
 
-    val managerLiveData = myBleManager.liveData
+    val bleManagerRecievedData = myBleManager.liveData
 
     //endregion
 
@@ -38,6 +50,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun scan() {
         _loadingLiveData.postValue(true)
         devicesItems.clear()
+        devicesSet.clear()
 
         val scanner = BluetoothLeScannerCompat.getScanner()
         val settings: ScanSettings =
@@ -74,6 +87,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                             result.rssi
                         )
                     )
+                    devicesSet[result.device.address] = result.device
                 }
                 _allBluetoothDevicesLiveData.postValue(devicesItems)
                 Timber.d("onScanResult() returned: $result")
@@ -86,14 +100,31 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         Handler(Looper.getMainLooper()).postDelayed({
             scanner.stopScan(scanCallback)
             _loadingLiveData.postValue(false)
-        }, 7500)
+        }, 3750)
     }
 
     fun connect(device: BluetoothDevice) {
-        myBleManager.connect(device)
-            .useAutoConnect(true)
-            .retry(3, 100)
-            .enqueue()
+        with(myBleManager) {
+            connect(device).run {
+                useAutoConnect(true)
+                retry(3, 100)
+                before { _loadingLiveData.postValue(true) }
+                done {
+                    _connectionStateLiveData.postValue(it.address)
+                    _connectFailedLiveData.postValue(false)
+                    _loadingLiveData.postValue(false)
+                }
+                fail { bleDevice, status ->
+                    run {
+                        _connectFailedLiveData.postValue(true)
+                        _connectionStateLiveData.postValue("fail")
+                        _loadingLiveData.postValue(false)
+                    }
+                }
+                enqueue()
+            }
+        }
+
     }
 
     fun disconnect() {

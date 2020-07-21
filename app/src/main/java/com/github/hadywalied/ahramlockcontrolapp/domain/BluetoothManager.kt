@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.domain
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
@@ -34,6 +34,7 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
         }
 
         override fun fromOnDataSent(device: BluetoothDevice, data: String) {
+            Timber.d(device.name + " " + device.address + " " + data)
             _mutableLiveData.postValue(data)
         }
     }
@@ -44,6 +45,7 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
 
     fun sendData(string: String) {
         if (characteristic != null) {
+            //TODO Handle SENDING States
             writeCharacteristic(characteristic, string.toByteArray()).with(callback).enqueue()
         }
     }
@@ -61,11 +63,10 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
         override fun initialize() {
             Timber.d("initialize: ")
 
-            setNotificationCallback(characteristic)
-            readCharacteristic(characteristic)
-            waitForWrite(characteristic)
+            setNotificationCallback(characteristic).with(callback)
+            readCharacteristic(characteristic).with(callback).enqueue()
 
-            enableNotifications(characteristic)
+            enableNotifications(characteristic).enqueue()
         }
 
         override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
@@ -88,7 +89,8 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
 
 }
 
-abstract class MyCallback : ProfileDataCallback, CallbackInterface, DataSentCallback {
+abstract class MyCallback : ProfileDataCallback,
+    CallbackInterface, DataSentCallback {
 
     override fun onDataReceived(device: BluetoothDevice, data: Data) {
         if (data.size() < 1) {
@@ -109,7 +111,6 @@ abstract class MyCallback : ProfileDataCallback, CallbackInterface, DataSentCall
     }
 }
 
-@FunctionalInterface
 interface CallbackInterface {
     fun fromOnDataSent(device: BluetoothDevice, data: String)
 }

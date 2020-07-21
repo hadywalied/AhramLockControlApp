@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

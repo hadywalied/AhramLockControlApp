@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.BaseFragment
+import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_control_panel.*

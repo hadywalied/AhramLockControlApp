@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.domain
 
 import android.content.Context
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo

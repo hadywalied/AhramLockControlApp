@@ -5,52 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@android:color/transparent"
-    android:elevation="8dp"
+    android:elevation="12dp"
     app:cardCornerRadius="8dp">
 
     <LinearLayout
+        android:id="@+id/devices_item_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_background"
         android:orientation="horizontal">
 
-        <androidx.cardview.widget.CardView
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:layout_weight="1"
+            android:layout_weight="2.5"
             android:background="@android:color/transparent"
-            android:elevation="0dp"
-            android:orientation="horizontal"
-            app:cardCornerRadius="8dp">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/device_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:orientation="vertical">
+                android:layout_margin="8dp"
+                android:text="Name"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/device_item_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Name"
-                    android:textSize="28sp" />
+            <TextView
+                android:id="@+id/device_item_mac"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="mac"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/device_item_mac"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="mac"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
         <androidx.cardview.widget.CardView
             android:layout_width="0dp"
@@ -61,7 +48,7 @@
             android:background="@android:color/transparent"
             android:elevation="0dp"
             android:orientation="horizontal"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="32dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -69,29 +56,28 @@
                 android:background="@android:color/transparent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:orientation="horizontal">
+                    android:background="@android:color/transparent">
 
                     <TextView
                         android:id="@+id/rssi_item_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:text="signal strength"
+                        android:text="signal"
                         android:textSize="16sp" />
 
                     <ImageView
                         android:id="@+id/rssi_item_icon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:layout_gravity="end|center_vertical"
+                        android:layout_alignParentEnd="true"
                         android:src="@drawable/ic_bluetooth_rssi"
                         android:tint="@color/state_unknown" />
 
-                </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
 
 

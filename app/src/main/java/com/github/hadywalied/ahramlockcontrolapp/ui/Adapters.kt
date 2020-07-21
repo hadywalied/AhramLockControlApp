@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
@@ -13,28 +14,36 @@ import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.Records
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.RecordsRepo
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.abs
-
-@FunctionalInterface
-interface OnDeviceClicked {
-    fun clicked(@NonNull device: Devices)
-}
 
 /**
  * [RecyclerView.Adapter] that can display [Devices].
  *
  */
 class DevicesRecyclerViewAdapter(
-    private val repo: DevicesRepo,
-    val listener: OnDeviceClicked
+    private val repo: DevicesRepo, private val list: List<Devices>? = null,
+    private val clicked: (Devices) -> Unit
 ) : RecyclerView.Adapter<DevicesRecyclerViewAdapter.ViewHolder>() {
 
-    private val values: List<Devices> = repo.getAll()
+    private var values: List<Devices> = list ?: listOf()
+
+    val job = CoroutineScope(Dispatchers.IO).launch {
+        values = repo.getAll()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        if (list != null) {
+            values = list
+        }
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.device_item, parent, false)
         return ViewHolder(view)
     }
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (values.isNotEmpty()) {
@@ -46,16 +55,18 @@ class DevicesRecyclerViewAdapter(
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val deviceName = view.findViewById<TextView?>(R.id.device_item_name)
-        val address = view.findViewById<TextView?>(R.id.device_item_mac)
-        val rssi = view.findViewById<TextView?>(R.id.rssi_item_text)
-        val rssiIcon = view.findViewById<ImageView?>(R.id.rssi_item_icon)
+        val deviceName = view.findViewById<TextView>(R.id.device_item_name)
+        val address = view.findViewById<TextView>(R.id.device_item_mac)
+        val rssi = view.findViewById<TextView>(R.id.rssi_item_text)
+        val rssiIcon = view.findViewById<ImageView>(R.id.rssi_item_icon)
+        val layout = view.findViewById<LinearLayout>(R.id.devices_item_layout)
 
         fun bind(device: Devices) {
             device.also {
-                deviceName.text = it.deviceName
+                deviceName.text = it.deviceName ?: "Unnamed Device"
                 address.text = it.address
                 rssi.text = it.rssi.toString()
+                //TODO Change The RSSI Text
                 when (abs(it.rssi)) {
                     in 0..50 -> {
                         rssiIcon.setColorFilter(Color.GREEN)
@@ -67,6 +78,7 @@ class DevicesRecyclerViewAdapter(
                         rssiIcon.setColorFilter(Color.RED)
                     }
                 }
+                layout.setOnClickListener { _ -> clicked(it) }
             }
         }
     }
@@ -80,10 +92,12 @@ class DevicesRecyclerViewAdapter(
 class RecordsRecyclerViewAdapter(
     repo: RecordsRepo
 ) : RecyclerView.Adapter<RecordsRecyclerViewAdapter.ViewHolder>() {
-    private val values: List<Records> = repo.getAll()
+    private var values: List<Records> = listOf()
+    val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.records_item, parent, false)
+        job.start()
         return ViewHolder(view)
     }
 

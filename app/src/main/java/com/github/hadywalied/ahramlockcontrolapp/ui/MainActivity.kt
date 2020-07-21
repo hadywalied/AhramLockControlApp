@@ -1,10 +1,16 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.os.Bundle
+import androidx.navigation.findNavController
+import com.github.hadywalied.ahramlockcontrolapp.R
+import com.github.hadywalied.ahramlockcontrolapp.base.BaseActivity
+import com.github.hadywalied.ahramlockcontrolapp.tag
 import timber.log.Timber
-import com.jakewharton.rxbinding4.*
 
 class MainActivity : BaseActivity() {
+    override fun onBackPressed() {
+//        super.onBackPressed()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

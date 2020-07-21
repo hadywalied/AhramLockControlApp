@@ -14,7 +14,7 @@ import java.util.*
 
 @Parcelize
 @Entity(tableName = "devices")
-data class Devices(@PrimaryKey val address: String, val deviceName: String, var rssi: Int) :
+data class Devices(@PrimaryKey val address: String="", val deviceName: String? = "UnNamed", var rssi: Int = 100) :
     Parcelable {
     override fun toString(): String = "$deviceName $address"
 }

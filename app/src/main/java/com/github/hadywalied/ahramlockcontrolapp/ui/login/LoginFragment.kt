@@ -3,12 +3,11 @@ package com.github.hadywalied.ahramlockcontrolapp.ui.login
 import android.content.Context
 import android.os.Bundle
 import android.transition.TransitionInflater
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.BaseFragment
+import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_login.*

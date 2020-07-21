@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp
+package com.github.hadywalied.ahramlockcontrolapp.base
 
 import android.Manifest
 import android.app.Activity
@@ -12,6 +12,8 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.github.hadywalied.ahramlockcontrolapp.REQUEST_CODE_REQUIRED_PERMISSIONS
+import com.github.hadywalied.ahramlockcontrolapp.REQUEST_ENABLE_BT
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -21,7 +23,8 @@ open class BaseActivity : AppCompatActivity() {
     protected val requiredPermissions = arrayOf(
         Manifest.permission.BLUETOOTH,
         Manifest.permission.BLUETOOTH_ADMIN,
-        Manifest.permission.ACCESS_COARSE_LOCATION
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
     )
     protected val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -52,7 +55,9 @@ open class BaseActivity : AppCompatActivity() {
         // displays a dialog requesting user permission to enable Bluetooth.
         bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+            startActivityForResult(enableBtIntent,
+                REQUEST_ENABLE_BT
+            )
         }
     }
 

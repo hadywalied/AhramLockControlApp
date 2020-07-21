@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/controlPanelFragment">
+    app:startDestination="@id/scanningFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -67,7 +67,9 @@
         <action
             android:id="@+id/action_scanningFragment_to_userDevicesFragment"
             app:destination="@id/userDevicesFragment"
-            app:popUpTo="@id/scanningFragment" />
+            app:launchSingleTop="false"
+            app:popUpTo="@id/scanningFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/recordsFragment"
