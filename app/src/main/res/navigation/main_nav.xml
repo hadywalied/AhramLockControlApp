@@ -66,7 +66,7 @@
         android:id="@+id/scanningFragment"
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.scanning.ScanningFragment"
         android:label="scanning_fragment"
-        tools:layout="@layout/scanning_fragment" >
+        tools:layout="@layout/fragment_scanning" >
         <action
             android:id="@+id/action_scanningFragment_to_userDevicesFragment"
             app:destination="@id/userDevicesFragment"

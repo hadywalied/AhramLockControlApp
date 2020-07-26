@@ -10,13 +10,17 @@ import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.github.hadywalied.ahramlockcontrolapp.R
+import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.recycler_layout.*
-import kotlinx.android.synthetic.main.scanning_fragment.*
+import kotlinx.android.synthetic.main.fragment_scanning.*
+import kotlinx.android.synthetic.main.no_devices_found_layout.*
+import java.util.concurrent.TimeUnit
 
-class ScanningFragment : Fragment() {
+class ScanningFragment : BaseFragment() {
 
     private lateinit var viewModel: MainViewModel
     private lateinit var repo: DevicesRepo
@@ -29,7 +33,7 @@ class ScanningFragment : Fragment() {
         //region observers
         viewModel.loadingLiveData.observe(
             viewLifecycleOwner,
-            Observer { swipe.isRefreshing = it ?: false })
+            Observer { onScanningFinished(it) })
         viewModel.allBluetoothDevicesLiveData.observe(
             viewLifecycleOwner,
             Observer { updateRecyclerList(it) })
@@ -41,46 +45,7 @@ class ScanningFragment : Fragment() {
             viewLifecycleOwner,
             Observer { connectedAction(it) })
         //endregion
-        return inflater.inflate(R.layout.scanning_fragment, container, false)
-    }
-
-    private fun connectionFailedAction(b: Boolean?) {
-        showMaterialDialog(b!!)
-    }
-
-    private fun scanFailedAction(b: Boolean?) {
-        showMaterialDialog(b!!)
-    }
-
-
-    private fun connectedAction(b: String?) {
-        var s: String = ""
-        var s_array = arrayListOf<String>()
-
-        when (b) {
-            "fail" -> showMaterialDialog(false)
-            else -> {
-                viewModel.devicesItems.forEach {
-                    if (it.address == b) {
-                        repo.insert(it)
-                        findNavController().navigate(R.id.action_scanningFragment_to_userDevicesFragment)
-                        return@forEach
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun updateRecyclerList(list: List<Devices>?) {
-        with(recycler) {
-            adapter =
-                DevicesRecyclerViewAdapter(repo, list, {
-                    viewModel.connect(viewModel.devicesSet[it.address]!!)
-                }, {
-//                    repo.delete(it)
-                })
-        }
+        return inflater.inflate(R.layout.fragment_scanning, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,9 +65,64 @@ class ScanningFragment : Fragment() {
             }
         }
         //endregion
-        swipe.setOnRefreshListener { viewModel.scan() }
+        swipe?.setOnRefreshListener { viewModel.scan() }
+        addDisposable(action_refresh.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
+            scanning_recycler_layout.visibility = View.VISIBLE
+            scanning_no_devices_found_layout.visibility = View.GONE
+            viewModel.scan()
+        })
+        state_scanning.isIndeterminate = true
+        state_scanning.visibility = View.VISIBLE
     }
 
+    //region helper functions
+    private fun onScanningFinished(bool: Boolean) {
+        swipe?.isRefreshing = bool
+        if (bool)
+            state_scanning.visibility = View.VISIBLE
+        else state_scanning.visibility = View.INVISIBLE
+        if (!bool && viewModel.devicesItems.isNullOrEmpty()) {
+            scanning_recycler_layout.visibility = View.GONE
+            scanning_no_devices_found_layout.visibility = View.VISIBLE
+        } else {
+            scanning_recycler_layout.visibility = View.VISIBLE
+            scanning_no_devices_found_layout.visibility = View.GONE
+        }
+    }
+
+    private fun connectionFailedAction(b: Boolean?) {
+        showMaterialDialog(b!!)
+    }
+
+    private fun scanFailedAction(b: Boolean?) {
+        showMaterialDialog(b!!)
+    }
+
+    private fun connectedAction(b: String?) {
+        when (b) {
+            "fail" -> showMaterialDialog(false)
+            else -> {
+                viewModel.devicesItems.forEach {
+                    if (it.address == b) {
+                        repo.insert(it)
+                        findNavController().navigate(R.id.action_scanningFragment_to_userDevicesFragment)
+                        return@forEach
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateRecyclerList(list: List<Devices>?) {
+        with(recycler) {
+            adapter =
+                DevicesRecyclerViewAdapter(repo, list, {
+                    viewModel.connect(viewModel.devicesSet[it.address]!!)
+                }, {
+//                    repo.delete(it)
+                })
+        }
+    }
 
     fun showMaterialDialog(bool: Boolean) {
         with(MaterialAlertDialogBuilder(requireContext())) {
@@ -119,5 +139,5 @@ class ScanningFragment : Fragment() {
             setNeutralButton("continue") { dialogInterface, i -> dialogInterface.dismiss() }
         }
     }
-
+//endregion
 }

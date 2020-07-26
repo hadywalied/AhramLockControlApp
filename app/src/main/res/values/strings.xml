@@ -39,7 +39,7 @@
     <string name="device_guide_title">CAN\'T SEE YOUR DEVICE?</string>
     <string name="blinky_guide_info">1. Make sure the DK is <b>turned on</b> and is connected to a power source using a micro USB cable or a coin cell is plugged in.
         \n\n2. Make sure the <b>ble_app_blinky</b> firmware and SoftDevice are flashed.</string>
-    <string name="blinky_guide_location_info">3. Location is turned off. Some Android phones require it enabled in order to scan for Bluetooth LE devices.
+    <string name="blinky_guide_location_info">4. Location is turned off. Some Android phones require it enabled in order to scan for Bluetooth LE devices.
 		If you are sure your Blinky is advertising and it doesn\'t show up here, click the button below to enable Location.</string>
     <string name="blinky_guide_location_action">Enable</string>
 

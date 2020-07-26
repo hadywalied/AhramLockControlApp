@@ -29,8 +29,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="1- Make Sure You're Near The Device \n 2- Check The Battery of the Device"/>
-
+        android:text="1- Make Sure You're Near The Device \n2- Check The Battery of the Device \n3- Check That Bluetooth is running and Location Service is on"/>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action_refresh"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="refresh"/>
     <LinearLayout
         android:id="@+id/no_location"
         android:layout_width="match_parent"

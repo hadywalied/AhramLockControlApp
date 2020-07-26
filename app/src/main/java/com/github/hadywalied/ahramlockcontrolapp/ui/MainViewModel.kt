@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.hadywalied.ahramlockcontrolapp.Devices
+import com.github.hadywalied.ahramlockcontrolapp.SCAN_SERVICE_UUID
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager.Companion.getInstance
@@ -64,9 +65,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 .build()
         val filters: MutableList<ScanFilter> = ArrayList()
 
-//        with(filters) {
-//            add(ScanFilter.Builder().setServiceUuid(SCAN_SERVICE_UUID).build())
-//        }
+        //TODO Remove If Requested
+        with(filters) {
+            add(ScanFilter.Builder().setServiceUuid(SCAN_SERVICE_UUID).build())
+        }
 
         val scanCallback = object : ScanCallback() {
             override fun onScanFailed(errorCode: Int) {
