@@ -16,9 +16,8 @@ import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
 import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
-import kotlinx.android.synthetic.main.fragment_user_devices.*
-import kotlinx.android.synthetic.main.fragment_user_devices.all_devices_recycler
 import kotlinx.android.synthetic.main.fragment_user_devices.toolbar
+import kotlinx.android.synthetic.main.recycler_layout.*
 
 class UserDevicesFragment : Fragment() {
 
@@ -52,7 +51,7 @@ class UserDevicesFragment : Fragment() {
     }
 
     private fun updateRecyclerList() {
-        with(all_devices_recycler) {
+        with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, clicked = {
                     if (!viewModel.myBleManager?.isConnected!!) {

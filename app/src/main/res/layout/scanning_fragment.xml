@@ -34,26 +34,17 @@
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/all_devices_recycler"
-            tools:ignore="UnusedAttribute" />
+            app:layout_constraintTop_toTopOf="@+id/all_devices_recycler" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe"
+    <include
+        layout="@layout/recycler_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/all_devices_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/device_item" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,6 +13,7 @@ import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.android.synthetic.main.recycler_layout.*
 import kotlinx.android.synthetic.main.scanning_fragment.*
 
 class ScanningFragment : Fragment() {
@@ -72,7 +73,7 @@ class ScanningFragment : Fragment() {
     }
 
     private fun updateRecyclerList(list: List<Devices>?) {
-        with(all_devices_recycler) {
+        with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, list, {
                     viewModel.connect(viewModel.devicesSet[it.address]!!)

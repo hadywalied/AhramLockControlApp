@@ -39,23 +39,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipe"
-        android:layout_width="match_parent"
+    <include
+        layout="@layout/recycler_layout"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar_layout">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/all_devices_recycler"
-            android:layout_width="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/device_item" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout" />
 
     <!--TODO finish the layout-->
     <include
