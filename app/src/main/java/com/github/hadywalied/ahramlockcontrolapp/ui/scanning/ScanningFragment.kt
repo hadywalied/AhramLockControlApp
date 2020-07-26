@@ -74,9 +74,11 @@ class ScanningFragment : Fragment() {
     private fun updateRecyclerList(list: List<Devices>?) {
         with(all_devices_recycler) {
             adapter =
-                DevicesRecyclerViewAdapter(repo, list) {
+                DevicesRecyclerViewAdapter(repo, list, {
                     viewModel.connect(viewModel.devicesSet[it.address]!!)
-                }
+                }, {
+//                    repo.delete(it)
+                })
         }
     }
 

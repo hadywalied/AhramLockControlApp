@@ -1,5 +1,6 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.userdevices
 
+import android.bluetooth.BluetoothAdapter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
@@ -44,19 +44,29 @@ class UserDevicesFragment : Fragment() {
             viewModel.disconnect()
             findNavController().navigateUp()
         }
-        updateRecyclerList(null)
+        updateRecyclerList()
         swipe.setOnRefreshListener {
-            updateRecyclerList(null)
+            updateRecyclerList()
             Handler(Looper.getMainLooper()).postDelayed({ swipe.isRefreshing = false }, 1500)
         }
     }
 
-    private fun updateRecyclerList(list: List<Devices>?) {
+    private fun updateRecyclerList() {
         with(all_devices_recycler) {
             adapter =
-                DevicesRecyclerViewAdapter(repo, list) {
-                    viewModel.connect(viewModel.devicesSet[it.address]!!)
-                }
+                DevicesRecyclerViewAdapter(repo, clicked = {
+                    if (!viewModel.myBleManager?.isConnected!!) {
+                        val bluetoothDevice =
+                            BluetoothAdapter.getDefaultAdapter().getRemoteDevice(it.address)
+                        viewModel.connect(bluetoothDevice)
+                    }
+                    UserDevicesFragmentDirections.actionUserDevicesFragmentToControlPanelFragment(it)
+                        .let { action ->
+                            findNavController().navigate(action.actionId, action.arguments)
+                        }
+                }, menuDeleteClicked = {
+                    repo.delete(it)
+                })
         }
     }
 

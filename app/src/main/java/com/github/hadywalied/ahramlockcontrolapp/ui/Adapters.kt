@@ -1,6 +1,7 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.graphics.Color
+import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,20 +26,17 @@ import kotlin.math.abs
  *
  */
 class DevicesRecyclerViewAdapter(
-    private val repo: DevicesRepo, private val list: List<Devices>? = null,
-    private val clicked: (Devices) -> Unit
+    private val repo: DevicesRepo, private val list: List<Devices>? = listOf(),
+    private val clicked: (Devices) -> Unit, private val menuDeleteClicked: (Devices) -> Unit
 ) : RecyclerView.Adapter<DevicesRecyclerViewAdapter.ViewHolder>() {
 
     private var values: List<Devices> = list ?: listOf()
 
     val job = CoroutineScope(Dispatchers.IO).launch {
-        values = repo.getAll()
+        if (list.isNullOrEmpty()) values = repo.getAll()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (list != null) {
-            values = list
-        }
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.device_item, parent, false)
         return ViewHolder(view)
@@ -54,14 +52,16 @@ class DevicesRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnCreateContextMenuListener {
         val deviceName = view.findViewById<TextView>(R.id.device_item_name)
         val address = view.findViewById<TextView>(R.id.device_item_mac)
         val rssi = view.findViewById<TextView>(R.id.rssi_item_text)
         val rssiIcon = view.findViewById<ImageView>(R.id.rssi_item_icon)
         val layout = view.findViewById<LinearLayout>(R.id.devices_item_layout)
-
+        var selDevice: Devices? = null
         fun bind(device: Devices) {
+            selDevice = device
             device.also {
                 deviceName.text = it.deviceName ?: "Unnamed Device"
                 address.text = it.address
@@ -79,7 +79,19 @@ class DevicesRecyclerViewAdapter(
                     }
                 }
                 layout.setOnClickListener { _ -> clicked(it) }
+                if (list.isNullOrEmpty()) layout.setOnCreateContextMenuListener(this)
             }
+        }
+
+        override fun onCreateContextMenu(
+            p0: ContextMenu?,
+            p1: View?,
+            p2: ContextMenu.ContextMenuInfo?
+        ) {
+            p0?.add(0, p1?.id!!, 0, "Remove")?.setOnMenuItemClickListener {
+                selDevice?.let { it1 -> menuDeleteClicked(it1) }
+                return@setOnMenuItemClickListener true
+            }//groupId, itemId, order, title
         }
     }
 }

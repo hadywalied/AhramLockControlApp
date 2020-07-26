@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SQLAndroidSettings">
+    <option name="autocommit" value="false" />
+    <option name="databases">
+      <map>
+        <entry key="AhramDB_E:\Projects\AhramSgProjects\AhramLockControlApp\AndroidSqlEditorDatabases\">
+          <value>
+            <list>
+              <option value="192.168.106.146:5555" />
+              <option value="/databases/AhramApp.db" />
+              <option value="AhramDB" />
+              <option value="AhramDB" />
+              <option value="false" />
+              <option value="com.github.hadywalied.ahramlockcontrolapp" />
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="storageVersion" value="2" />
+  </component>
+</project>

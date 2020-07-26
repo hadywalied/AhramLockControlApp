@@ -16,6 +16,19 @@ import java.util.*
 
 class MyBleManager(context: Context) : ObservableBleManager(context) {
 
+    companion object {
+        @Volatile
+        private var instance: MyBleManager? = null
+        fun getInstance(context: Context): MyBleManager? {
+            return MyBleManager.instance ?: synchronized(MyBleManager::class.java) {
+                if (MyBleManager.instance == null) {
+                    MyBleManager.instance = MyBleManager(context)
+                }
+                return MyBleManager.instance
+            }
+        }
+    }
+
     val SERVICEUUID = UUID.fromString("0000FFE0-0000-1000-8000-00805F9B34FB")
     val CHARUUID = UUID.fromString("0000FFE1-0000-1000-8000-00805F9B34FB")
 

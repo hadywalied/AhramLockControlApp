@@ -2,13 +2,16 @@ package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.app.Application
 import android.bluetooth.BluetoothDevice
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.hadywalied.ahramlockcontrolapp.Devices
+import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager
+import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager.Companion.getInstance
 import no.nordicsemi.android.support.v18.scanner.*
 import timber.log.Timber
 
@@ -39,10 +42,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         get() = _loadingLiveData
 
 
-    private val myBleManager =
-        MyBleManager(app)
+    val myBleManager =
+        getInstance(app)
 
-    val bleManagerRecievedData = myBleManager.liveData
+    val bleManagerRecievedData = myBleManager?.liveData
 
     //endregion
 
@@ -104,7 +107,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun connect(device: BluetoothDevice) {
-        with(myBleManager) {
+        with(myBleManager!!) {
             connect(device).run {
                 useAutoConnect(true)
                 retry(3, 100)
@@ -128,19 +131,21 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun disconnect() {
-        myBleManager.disconnect().enqueue()
+        myBleManager?.disconnect()?.enqueue()
     }
 
     fun sendData(string: String) {
-        if (myBleManager.isConnected) {
+        if (myBleManager?.isConnected!!) {
             myBleManager.sendData(string)
         }
     }
+
+
 //endregion
 
     override fun onCleared() {
         super.onCleared()
-        if (myBleManager.isConnected) {
+        if (myBleManager?.isConnected!!) {
             disconnect()
         }
     }

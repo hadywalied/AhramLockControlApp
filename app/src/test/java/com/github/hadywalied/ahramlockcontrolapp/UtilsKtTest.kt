@@ -47,10 +47,4 @@ class UtilsKtTest {
         assertEquals("GetRecords", constructSendCommand("GetRecords"))
     }
 
-
-    @Test
-    fun `test string format conversion to localdatetime`() {
-        val string = "180128130853"
-        assertEquals(LocalDateTime.parse("2018-01-28T13:08:53"), string.toLocalDateTime(string))
-    }
 }

@@ -8,9 +8,7 @@ import com.github.hadywalied.ahramlockcontrolapp.tag
 import timber.log.Timber
 
 class MainActivity : BaseActivity() {
-    override fun onBackPressed() {
-//        super.onBackPressed()
-    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

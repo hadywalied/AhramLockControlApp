@@ -58,6 +58,9 @@
             app:launchSingleTop="false"
             app:popUpTo="@id/controlPanelFragment"
             app:popUpToInclusive="false" />
+        <argument
+            android:name="connectedDevice"
+            app:argType="com.github.hadywalied.ahramlockcontrolapp.Devices" />
     </fragment>
     <fragment
         android:id="@+id/scanningFragment"
