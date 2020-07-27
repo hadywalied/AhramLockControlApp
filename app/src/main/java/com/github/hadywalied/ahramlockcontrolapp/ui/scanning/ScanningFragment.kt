@@ -136,7 +136,7 @@ class ScanningFragment : BaseFragment() {
                     setTitle("Success")
                 }
             }
-            setNeutralButton("continue") { dialogInterface, i -> dialogInterface.dismiss() }
+            setNeutralButton("continue") { dialogInterface, _ -> dialogInterface.dismiss() }
         }
     }
 //endregion

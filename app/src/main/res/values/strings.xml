@@ -53,5 +53,8 @@
     <string name="state_initializing">Initializing…</string>
     <string name="sucess">Sucess</string>
     <string name="action_failed">Failed</string>
+    <string name="add_locks">Add Locks</string>
+    <string name="my_locks">My Locks</string>
+    <string name="edit_name">Edit Name</string>
 
 </resources>

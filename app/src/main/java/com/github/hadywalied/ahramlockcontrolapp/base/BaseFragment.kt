@@ -1,5 +1,6 @@
 package com.github.hadywalied.ahramlockcontrolapp.base
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
@@ -10,14 +11,15 @@ import io.reactivex.rxjava3.disposables.Disposable
 open class BaseFragment : Fragment() {
     private lateinit var disposables: CompositeDisposable
 
+    @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+        /*activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                findNavController().navigateUp()
+                findNavController().popBackStack()
             }
-        })
+        })*/
     }
 
     private fun init() {

@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             app:popupTheme="@style/Theme.PopupOverlay"
-            app:title="My Devices" />
+            app:title="@string/my_locks" />
 
         <ProgressBar
             android:id="@+id/state_scanning"
