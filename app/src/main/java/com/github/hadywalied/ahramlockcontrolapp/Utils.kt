@@ -1,10 +1,7 @@
 package com.github.hadywalied.ahramlockcontrolapp
 
-import android.os.Build
-import androidx.annotation.RequiresApi
-import java.lang.StringBuilder
-import java.time.LocalDate
-import java.time.LocalDateTime
+import android.content.Context
+import android.provider.Settings
 
 // IGNORE This One
 fun ByteArray.toHex(): String {
@@ -59,3 +56,14 @@ fun getTimeDate(customFormat: String) =
             "${customFormat[4]}${customFormat[5]}" + "T${customFormat[6]}${customFormat[7]}:" +
             "${customFormat[8]}${customFormat[9]}:" + "${customFormat[10]}${customFormat[11]}"
 
+fun isLocationAvailable(context: Context): Boolean {
+    var locationMode = Settings.Secure.LOCATION_MODE_OFF
+    try {
+        locationMode = Settings.Secure.getInt(
+            context.contentResolver,
+            Settings.Secure.LOCATION_MODE
+        )
+    } catch (e: Settings.SettingNotFoundException) {
+    }
+    return locationMode != Settings.Secure.LOCATION_MODE_OFF
+}

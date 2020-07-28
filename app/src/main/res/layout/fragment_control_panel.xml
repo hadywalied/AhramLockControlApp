@@ -46,12 +46,6 @@
                     android:text="Admins Control" />
 
                 <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_nfc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="NFC Cards" />
-
-                <com.google.android.material.chip.Chip
                     android:id="@+id/chip_basic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

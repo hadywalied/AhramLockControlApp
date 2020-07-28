@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/userDevicesFragment"
-        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userdevices.UserDevicesFragment"
+        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.mydevices.UserDevicesFragment"
         android:label="fragment_user_devices"
         tools:layout="@layout/fragment_user_devices" >
         <action
@@ -72,6 +72,10 @@
         <argument
             android:name="connectedDevice"
             app:argType="com.github.hadywalied.ahramlockcontrolapp.Devices" />
+        <action
+            android:id="@+id/action_controlPanelFragment_to_usersFragment"
+            app:destination="@id/usersFragment"
+            app:popUpTo="@id/controlPanelFragment" />
     </fragment>
     <fragment
         android:id="@+id/scanningFragment"
@@ -95,4 +99,9 @@
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.deviceinfo.BasicInfoFragment"
         android:label="fragment_basic_info"
         tools:layout="@layout/fragment_basic_info" />
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.adminspanel.UsersFragment"
+        android:label="fragment_users"
+        tools:layout="@layout/fragment_users" />
 </navigation>

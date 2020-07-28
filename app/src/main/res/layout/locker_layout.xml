@@ -14,11 +14,13 @@
         android:text="Click to UnLock"
         android:textAlignment="gravity" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_count"
         style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="UnLock" />
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:src="@drawable/ic_lock"
+        android:background="@color/orange_600"
+        android:layout_gravity="center" />
 
 </com.google.android.material.circularreveal.CircularRevealLinearLayout>

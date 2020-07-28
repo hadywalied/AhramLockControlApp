@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -55,7 +56,8 @@ open class BaseActivity : AppCompatActivity() {
         // displays a dialog requesting user permission to enable Bluetooth.
         bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent,
+            startActivityForResult(
+                enableBtIntent,
                 REQUEST_ENABLE_BT
             )
         }

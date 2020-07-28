@@ -94,7 +94,8 @@
                 android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:layout_margin="8dp"
-                android:background="@color/orange_600"
+                android:background="@color/blue_600"
+                android:backgroundTint="@color/orange_600"
                 android:contentDescription="@string/edit_name"
                 android:src="@drawable/ic_baseline_edit_24" />
 

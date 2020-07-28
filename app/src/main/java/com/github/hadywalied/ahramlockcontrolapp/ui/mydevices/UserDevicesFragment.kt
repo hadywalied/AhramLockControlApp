@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp.ui.userdevices
+package com.github.hadywalied.ahramlockcontrolapp.ui.mydevices
 
 import android.bluetooth.BluetoothAdapter
 import android.os.Bundle
@@ -38,7 +38,7 @@ class UserDevicesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         repo = Injector.ProvideDevicesRepo(requireContext())
         toolbar.navigationIcon =
-            ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_refresh)
+            ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
             viewModel.disconnect()
             findNavController().navigateUp()
@@ -46,7 +46,7 @@ class UserDevicesFragment : Fragment() {
         updateRecyclerList()
         swipe.setOnRefreshListener {
             updateRecyclerList()
-            Handler(Looper.getMainLooper()).postDelayed({ swipe.isRefreshing = false }, 1500)
+            Handler(Looper.getMainLooper()).postDelayed({ swipe?.isRefreshing = false }, 1500)
         }
     }
 

@@ -1,14 +1,19 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.app.Application
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
+import android.content.IntentFilter
+import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.github.hadywalied.ahramlockcontrolapp.Devices
+import com.github.hadywalied.ahramlockcontrolapp.MyBluetoothBroadcastReceiver
+import com.github.hadywalied.ahramlockcontrolapp.MyLocationBroadcastReceiver
 import com.github.hadywalied.ahramlockcontrolapp.SCAN_SERVICE_UUID
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager
@@ -141,15 +146,31 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             myBleManager.sendData(string)
         }
     }
-
-
 //endregion
+
+    //region broadcast receivers
+    fun registerBroadcastRecievers(app: Application) {
+        app.registerReceiver(
+            MyBluetoothBroadcastReceiver,
+            IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        )
+        app.registerReceiver(
+            MyLocationBroadcastReceiver,
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION)
+        )
+    }
+    //endregion
 
     override fun onCleared() {
         super.onCleared()
         if (myBleManager?.isConnected!!) {
             disconnect()
         }
+    }
+
+    fun unRegisterRecievers(app: Application) {
+        app.unregisterReceiver(MyBluetoothBroadcastReceiver)
+        app.unregisterReceiver(MyLocationBroadcastReceiver)
     }
 
 }
