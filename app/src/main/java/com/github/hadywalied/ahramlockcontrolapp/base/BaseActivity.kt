@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -16,7 +15,8 @@ import androidx.core.content.ContextCompat
 import com.github.hadywalied.ahramlockcontrolapp.REQUEST_CODE_REQUIRED_PERMISSIONS
 import com.github.hadywalied.ahramlockcontrolapp.REQUEST_ENABLE_BT
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.disposables.CompositeDisposable as CompositeDisposable1
 
 
 open class BaseActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ open class BaseActivity : AppCompatActivity() {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
     }
-    private lateinit var disposables: CompositeDisposable
+    private lateinit var disposables: CompositeDisposable1
 
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
@@ -97,11 +97,11 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     private fun initRx() {
-        disposables = CompositeDisposable()
+        disposables = CompositeDisposable1()
     }
 
     @Synchronized
-    protected fun addDisposable(disposable: Disposable?) {
+    protected fun addDisposable(disposable: @NonNull io.reactivex.rxjava3.disposables.Disposable) {
         if (disposable == null) return
         disposables.add(disposable)
     }

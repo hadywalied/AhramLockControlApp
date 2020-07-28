@@ -1,18 +1,22 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui
 
+import android.bluetooth.BluetoothAdapter
+import android.content.Intent
 import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.R
+import androidx.navigation.fragment.findNavController
+import com.github.hadywalied.ahramlockcontrolapp.*
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseActivity
-import com.github.hadywalied.ahramlockcontrolapp.bluetoothStateLiveData
-import com.github.hadywalied.ahramlockcontrolapp.locationStateLiveData
-import com.github.hadywalied.ahramlockcontrolapp.tag
+import com.jakewharton.rxbinding4.view.clicks
+import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.info_no_bluetooth.*
 import kotlinx.android.synthetic.main.main_activity.*
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class MainActivity : BaseActivity() {
 
@@ -33,6 +37,17 @@ class MainActivity : BaseActivity() {
         if (!b!!) {
             layout_devices_fragment.visibility = View.GONE
             layout_no_bluetooth.visibility = View.VISIBLE
+            addDisposable(
+                action_enable_bluetooth.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS)
+                    .subscribe {
+                        bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
+                            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                            startActivityForResult(
+                                enableBtIntent,
+                                REQUEST_ENABLE_BT
+                            )
+                        }
+                    })
         } else {
             layout_devices_fragment.visibility = View.VISIBLE
             layout_no_bluetooth.visibility = View.GONE
