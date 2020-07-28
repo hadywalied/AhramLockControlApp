@@ -3,7 +3,6 @@ package com.github.hadywalied.ahramlockcontrolapp.ui
 import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.Context
 import android.content.IntentFilter
 import android.location.LocationManager
 import android.os.Handler
@@ -15,8 +14,6 @@ import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.MyBluetoothBroadcastReceiver
 import com.github.hadywalied.ahramlockcontrolapp.MyLocationBroadcastReceiver
 import com.github.hadywalied.ahramlockcontrolapp.SCAN_SERVICE_UUID
-import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
-import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager.Companion.getInstance
 import no.nordicsemi.android.support.v18.scanner.*
 import timber.log.Timber
@@ -51,7 +48,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val myBleManager =
         getInstance(app)
 
-    val bleManagerRecievedData = myBleManager?.liveData
+    val bleManagerRecievedData = myBleManager?.receievedLiveData
+    val bleManagerConnectionState = myBleManager?.connectedLiveData
 
     //endregion
 

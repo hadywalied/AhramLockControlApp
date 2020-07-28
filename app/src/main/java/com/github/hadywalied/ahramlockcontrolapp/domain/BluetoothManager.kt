@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import no.nordicsemi.android.ble.callback.DataSentCallback
@@ -32,9 +33,13 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
     val SERVICEUUID = UUID.fromString("0000FFE0-0000-1000-8000-00805F9B34FB")
     val CHARUUID = UUID.fromString("0000FFE1-0000-1000-8000-00805F9B34FB")
 
-    private val _mutableLiveData = MutableLiveData<String>()
-    val liveData: LiveData<String>
-        get() = _mutableLiveData
+    private val _receivedDataLiveData = MutableLiveData<String>()
+    val receievedLiveData: LiveData<String>
+        get() = _receivedDataLiveData
+
+    private val _connectedLiveData = MutableLiveData(false)
+    val connectedLiveData: LiveData<Boolean>
+        get() = _connectedLiveData
 
     private var characteristic: BluetoothGattCharacteristic? = null
 
@@ -48,7 +53,7 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
 
         override fun fromOnDataSent(device: BluetoothDevice, data: String) {
             Timber.d(device.name + " " + device.address + " " + data)
-            _mutableLiveData.postValue(data)
+            _receivedDataLiveData.postValue(data)
         }
     }
 
@@ -70,15 +75,20 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
     private inner class MyBleManagerGattCallback : BleManagerGattCallback() {
         override fun onDeviceDisconnected() {
             characteristic = null
+            _connectedLiveData.postValue(false)
             Timber.d("onDeviceDisconnected: Disconnected")
+        }
+
+        override fun onDeviceReady() {
+            super.onDeviceReady()
+            _connectedLiveData.postValue(true)
+            Timber.d("onDeviceReady: Connected")
         }
 
         override fun initialize() {
             Timber.d("initialize: ")
-
             setNotificationCallback(characteristic).with(callback)
             readCharacteristic(characteristic).with(callback).enqueue()
-
             enableNotifications(characteristic).enqueue()
         }
 
