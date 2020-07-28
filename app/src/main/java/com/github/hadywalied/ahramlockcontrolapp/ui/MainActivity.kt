@@ -2,17 +2,13 @@ package com.github.hadywalied.ahramlockcontrolapp.ui
 
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.github.hadywalied.ahramlockcontrolapp.*
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseActivity
 import com.jakewharton.rxbinding4.view.clicks
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.info_no_bluetooth.*
 import kotlinx.android.synthetic.main.main_activity.*
 import timber.log.Timber
@@ -67,6 +63,6 @@ class MainActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Timber.d("Receivers Un Registered")
-        viewModel.unRegisterRecievers(this.application)
+        viewModel.unRegisterReceivers(this.application)
     }
 }

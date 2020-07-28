@@ -20,11 +20,11 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
         @Volatile
         private var instance: MyBleManager? = null
         fun getInstance(context: Context): MyBleManager? {
-            return MyBleManager.instance ?: synchronized(MyBleManager::class.java) {
-                if (MyBleManager.instance == null) {
-                    MyBleManager.instance = MyBleManager(context)
+            return instance ?: synchronized(MyBleManager::class.java) {
+                if (instance == null) {
+                    instance = MyBleManager(context)
                 }
-                return MyBleManager.instance
+                return instance
             }
         }
     }

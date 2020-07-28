@@ -168,7 +168,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun unRegisterRecievers(app: Application) {
+    fun unRegisterReceivers(app: Application) {
         app.unregisterReceiver(MyBluetoothBroadcastReceiver)
         app.unregisterReceiver(MyLocationBroadcastReceiver)
     }
