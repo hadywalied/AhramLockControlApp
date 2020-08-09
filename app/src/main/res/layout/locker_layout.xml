@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/btn_count"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:src="@drawable/gear_duo" />
+
     <TextView
+        android:layout_margin="16dp"
         android:id="@+id/tv_counter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Click to UnLock"
+        android:text="Click to Unlock"
         android:textAlignment="gravity" />
 
-    <ImageButton
-        android:id="@+id/btn_count"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="100dp"
-        android:layout_height="75dp"
-        android:src="@drawable/ic_lock"
-        android:background="@color/orange_600"
-        android:layout_gravity="center" />
 
 </com.google.android.material.circularreveal.CircularRevealLinearLayout>

@@ -51,7 +51,7 @@
 
     <include
         android:id="@+id/scanning_no_devices_found_layout"
-        layout="@layout/no_devices_found_layout"
+        layout="@layout/info_no_devices_found_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

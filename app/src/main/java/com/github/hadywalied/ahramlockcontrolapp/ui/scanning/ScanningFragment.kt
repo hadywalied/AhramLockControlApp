@@ -2,7 +2,6 @@ package com.github.hadywalied.ahramlockcontrolapp.ui.scanning
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -17,7 +16,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.recycler_layout.*
 import kotlinx.android.synthetic.main.fragment_scanning.*
-import kotlinx.android.synthetic.main.no_devices_found_layout.*
+import kotlinx.android.synthetic.main.fragment_scanning.state_scanning
+import kotlinx.android.synthetic.main.fragment_scanning.toolbar
+import kotlinx.android.synthetic.main.fragment_user_devices.*
+import kotlinx.android.synthetic.main.info_no_devices_found_layout.*
+import no.nordicsemi.android.ble.livedata.state.ConnectionState
 import java.util.concurrent.TimeUnit
 
 class ScanningFragment : BaseFragment() {
@@ -41,9 +44,9 @@ class ScanningFragment : BaseFragment() {
         viewModel.connectFailedLiveData.observe(
             viewLifecycleOwner,
             Observer { connectionFailedAction(it) })
-        viewModel.connectionStateLiveData.observe(
+        viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
-            Observer { connectedAction(it) })
+            Observer { connectedAction(it.state) })
         //endregion
         return inflater.inflate(R.layout.fragment_scanning, container, false)
     }
@@ -98,12 +101,12 @@ class ScanningFragment : BaseFragment() {
         showMaterialDialog(b!!)
     }
 
-    private fun connectedAction(b: String?) {
+    private fun connectedAction(b: ConnectionState.State) {
         when (b) {
-            "fail" -> showMaterialDialog(false)
+            ConnectionState.State.DISCONNECTED -> showMaterialDialog(false)
             else -> {
                 viewModel.devicesItems.forEach {
-                    if (it.address == b) {
+                    if (it.address == viewModel.myBleManager?.bluetoothDevice?.address) {
                         repo.insert(it)
                         findNavController().navigate(R.id.action_scanningFragment_to_userDevicesFragment)
                         return@forEach
@@ -128,15 +131,16 @@ class ScanningFragment : BaseFragment() {
         with(MaterialAlertDialogBuilder(requireContext())) {
             when (bool) {
                 false -> {
-                    setView(R.layout.failed_layout)
+                    setView(R.layout.info_failed_layout)
                     setTitle("Try Again")
                 }
                 true -> {
-                    setView(R.layout.success_layout)
+                    setView(R.layout.info_success_layout)
                     setTitle("Success")
                 }
             }
             setNeutralButton("continue") { dialogInterface, _ -> dialogInterface.dismiss() }
+            show()
         }
     }
 //endregion

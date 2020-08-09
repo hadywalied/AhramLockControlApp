@@ -56,5 +56,6 @@
     <string name="add_locks">Add Locks</string>
     <string name="my_locks">My Locks</string>
     <string name="edit_name">Edit Name</string>
+    <string name="connection_lost">Connection Lost</string>
 
 </resources>

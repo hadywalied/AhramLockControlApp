@@ -15,6 +15,7 @@ import com.github.hadywalied.ahramlockcontrolapp.MyBluetoothBroadcastReceiver
 import com.github.hadywalied.ahramlockcontrolapp.MyLocationBroadcastReceiver
 import com.github.hadywalied.ahramlockcontrolapp.SCAN_SERVICE_UUID
 import com.github.hadywalied.ahramlockcontrolapp.domain.MyBleManager.Companion.getInstance
+import no.nordicsemi.android.ble.livedata.state.ConnectionState
 import no.nordicsemi.android.support.v18.scanner.*
 import timber.log.Timber
 
@@ -36,21 +37,20 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val connectFailedLiveData: LiveData<Boolean>
         get() = _connectFailedLiveData
 
-    private val _connectionStateLiveData = MutableLiveData<String>()
-    val connectionStateLiveData: LiveData<String>
-        get() = _connectionStateLiveData
 
     private val _loadingLiveData = MutableLiveData(false)
     val loadingLiveData: LiveData<Boolean>
         get() = _loadingLiveData
 
 
-    val myBleManager =
-        getInstance(app)
+    val myBleManager = getInstance(app)
 
     val bleManagerRecievedData = myBleManager?.receievedLiveData
     val bleManagerConnectionState = myBleManager?.connectedLiveData
 
+    private val _connectionStateLiveData = myBleManager?.state
+    val connectionStateLiveData: LiveData<ConnectionState>?
+        get() = _connectionStateLiveData
     //endregion
 
     // region Bluetooth Functions
@@ -112,20 +112,21 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun connect(device: BluetoothDevice) {
+        Timber.d("Connect")
         with(myBleManager!!) {
             connect(device).run {
                 useAutoConnect(true)
                 retry(3, 100)
                 before { _loadingLiveData.postValue(true) }
                 done {
-                    _connectionStateLiveData.postValue(it.address)
+                    Timber.d("Connected Successfully")
                     _connectFailedLiveData.postValue(false)
                     _loadingLiveData.postValue(false)
                 }
-                fail { bleDevice, status ->
+                fail { _, _ ->
                     run {
+                        Timber.d("Connection Failed")
                         _connectFailedLiveData.postValue(true)
-                        _connectionStateLiveData.postValue("fail")
                         _loadingLiveData.postValue(false)
                     }
                 }

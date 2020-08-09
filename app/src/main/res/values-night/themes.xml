@@ -7,7 +7,7 @@
 
     <style name="Theme.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/blue_700</item>
+        <item name="colorPrimary">@color/blue_600</item>
         <item name="colorPrimaryDark">@color/blue_800</item>
         <item name="colorAccent">@color/orange_800</item>
         <item name="colorSecondary">@color/orange_700</item>

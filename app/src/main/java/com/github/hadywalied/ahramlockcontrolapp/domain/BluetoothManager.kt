@@ -37,7 +37,7 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
     val receievedLiveData: LiveData<String>
         get() = _receivedDataLiveData
 
-    private val _connectedLiveData = MutableLiveData(false)
+    private val _connectedLiveData = MutableLiveData(true)
     val connectedLiveData: LiveData<Boolean>
         get() = _connectedLiveData
 

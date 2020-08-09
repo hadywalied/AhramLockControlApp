@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.R
@@ -17,7 +16,6 @@ import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.RecordsRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -30,7 +28,7 @@ class DevicesRecyclerViewAdapter(
     private val clicked: (Devices) -> Unit, private val menuDeleteClicked: (Devices) -> Unit
 ) : RecyclerView.Adapter<DevicesRecyclerViewAdapter.ViewHolder>() {
 
-    private var values: List<Devices> = list ?: listOf()
+    var values: List<Devices> = list ?: listOf()
 
     val job = CoroutineScope(Dispatchers.IO).launch {
         if (list.isNullOrEmpty()) values = repo.getAll()
@@ -38,7 +36,7 @@ class DevicesRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.device_item, parent, false)
+            .inflate(R.layout.item_device, parent, false)
         return ViewHolder(view)
     }
 
@@ -108,7 +106,7 @@ class RecordsRecyclerViewAdapter(
     val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.records_item, parent, false)
+            .inflate(R.layout.item_records, parent, false)
         job.start()
         return ViewHolder(view)
     }
