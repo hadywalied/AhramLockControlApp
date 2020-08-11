@@ -11,20 +11,20 @@
         <item name="colorPrimaryDark">@color/orange_800</item>
         <item name="colorAccent">@color/blue_600</item>
         <item name="colorSecondary">@color/blue_600</item>
-        <item name="colorOnPrimary">@color/primaryTextColor</item>
-        <item name="colorOnSecondary">@color/secondaryTextColor</item>
+        <item name="colorOnPrimary">@color/secondaryTextColor</item>
+        <item name="colorOnSecondary">@color/primaryTextColor</item>
         <item name="colorOnSurface">@color/secondaryTextColor</item>
     </style>
 
 
-    <style name="Theme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    <style name="Theme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
-    <style name="Theme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="titleTextColor">@color/primaryTextColor</item>
+    <style name="Theme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="titleTextColor">@color/secondaryTextColor</item>
         <item name="popupTheme">@style/Theme.PopupOverlay</item>
     </style>
 
-    <style name="Theme.chipOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
+    <style name="Theme.chipOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="Theme.SplashScreen">
         <item name="colorPrimaryDark">@android:color/transparent</item>

@@ -15,4 +15,15 @@
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="colorOnSurface">@color/secondaryTextColor</item>
     </style>
+
+    <style name="Theme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+
+    <style name="Theme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+        <item name="titleTextColor">@color/primaryTextColor</item>
+        <item name="popupTheme">@style/Theme.PopupOverlay</item>
+    </style>
+
+    <style name="Theme.chipOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
+
 </resources>

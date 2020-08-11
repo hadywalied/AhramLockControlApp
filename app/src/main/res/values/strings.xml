@@ -6,7 +6,7 @@
     <string name="transitionName">logo Transition</string>
     <string name="login_continue">Continue</string>
     <string name="login_your_name">Your Name</string>
-    <string name="login_hello">Hello,</string>
+    <string name="login_hello">Welcome,</string>
     <string name="sharedprefsfile">bleuser</string>
     <string name="username">username</string>
 
@@ -57,5 +57,6 @@
     <string name="my_locks">My Locks</string>
     <string name="edit_name">Edit Name</string>
     <string name="connection_lost">Connection Lost</string>
+    <string name="firstflag">flag</string>
 
 </resources>

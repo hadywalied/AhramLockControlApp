@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/add_user_menu_item"
+        android:title="Add Users" />
+    <item
+        android:id="@+id/nfc_menu_item"
+        android:menuCategory="system"
+        android:title="Add NFC Card"
+        android:visible="true" />
+</menu>

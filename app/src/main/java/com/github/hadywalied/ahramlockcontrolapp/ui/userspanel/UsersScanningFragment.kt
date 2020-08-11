@@ -1,4 +1,4 @@
-package com.github.hadywalied.ahramlockcontrolapp.ui.adminspanel
+package com.github.hadywalied.ahramlockcontrolapp.ui.userspanel
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.hadywalied.ahramlockcontrolapp.R
 
-class UsersFragment : Fragment() {
+
+class UsersScanningFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -15,10 +16,7 @@ class UsersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_users, container, false)
+        return inflater.inflate(R.layout.fragment_users_scanning, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
 }

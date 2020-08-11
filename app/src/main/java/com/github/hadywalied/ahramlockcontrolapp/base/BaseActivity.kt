@@ -12,6 +12,10 @@ import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.REQUEST_CODE_REQUIRED_PERMISSIONS
 import com.github.hadywalied.ahramlockcontrolapp.REQUEST_ENABLE_BT
 import io.reactivex.disposables.CompositeDisposable
@@ -37,6 +41,12 @@ open class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState, persistentState)
 //        Timber.plant(DebugTree())
         init()
+
+        val navController = findNavController(R.id.nav_host_fragment_container)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+
+        // This line is only necessary if using the default action bar.
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onStart() {

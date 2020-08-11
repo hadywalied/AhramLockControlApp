@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.LoginFragment">
+    tools:context=".ui.welcome.WelcomeScreenFragment">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_margin="16dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
         android:contentDescription="@string/splash_logo"
         android:src="@drawable/ahram"
         android:transitionName="@string/transitionName"
@@ -20,95 +20,42 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_login"
-        style="@style/Widget.MaterialComponents.CardView.Login"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:elevation="16dp"
-        android:orientation="vertical"
-        app:cardCornerRadius="16dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView"
-        app:layout_constraintVertical_bias="0.3">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
-                android:layout_margin="16dp"
-                android:text="@string/login_hello"
-                android:textSize="32sp" />
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/et_username"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:hint="@string/login_your_name"
-                android:imeOptions="actionDone"
-                android:inputType="textPersonName|textAutoComplete" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_continue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_margin="16dp"
-                android:text="@string/login_continue" />
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_logged_in"
         style="@style/Widget.MaterialComponents.CardView.Login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:elevation="16dp"
+        android:elevation="20dp"
         android:orientation="vertical"
         android:visibility="visible"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageView"
-        app:layout_constraintVertical_bias="0.3">
+        app:layout_constraintVertical_bias="0.35">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/fab_edit_name"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="end"
-                android:layout_margin="8dp"
-                android:background="@color/blue_600"
-                android:backgroundTint="@color/orange_600"
-                android:contentDescription="@string/edit_name"
-                android:src="@drawable/ic_baseline_edit_24" />
-
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_loggedin"
+            <LinearLayout
+                android:id="@+id/layout_recently_used"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start|top"
-                android:layout_margin="16dp"
-                android:text="@string/login_hello"
-                android:textSize="32sp" />
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:text="Recently Used Device"
+                    android:textSize="16sp" />
+
+                <include layout="@layout/item_device" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,18 +66,20 @@
                     android:id="@+id/btn_add_device"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="center_vertical"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="@string/add_locks" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_all_devices"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
+                    android:layout_gravity="center_vertical"
                     android:layout_margin="16dp"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="@string/my_locks" />
             </LinearLayout>
 

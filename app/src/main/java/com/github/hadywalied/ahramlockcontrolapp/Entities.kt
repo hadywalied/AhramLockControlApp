@@ -14,7 +14,11 @@ import java.util.*
 
 @Parcelize
 @Entity(tableName = "devices")
-data class Devices(@PrimaryKey val address: String="", val deviceName: String? = "UnNamed", var rssi: Int = 100) :
+data class Devices(
+    @PrimaryKey val address: String = "",
+    val deviceName: String? = "UnNamed",
+    var rssi: Int = 100
+) :
     Parcelable {
     override fun toString(): String = "$deviceName $address"
 }
@@ -23,6 +27,13 @@ data class Devices(@PrimaryKey val address: String="", val deviceName: String? =
 @Parcelize
 data class Records(
     @PrimaryKey val address: String,
-    val name: String,
-    val localDateTime: String
+    val name: String = "",
+    val localDateTime: String = ""
+) : Parcelable
+
+@Parcelize
+data class Users(
+    val id: String,
+    val name: String
+    , val address: String
 ) : Parcelable

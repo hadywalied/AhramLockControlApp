@@ -68,7 +68,9 @@ class ControlPanelFragment : BaseFragment() {
         addDisposable(btn_count.clicks().throttleFirst(delay, TimeUnit.MILLISECONDS).subscribe {
 //            btn_count.text = "unlocked"
             showImageViewGears()
+
             viewModel.sendData(constructSendCommand("UnLock", device.address))
+
             object : CountDownTimer(delay, 100) {
                 override fun onTick(millisUntilFinished: Long) {
                     tv_counter.text =

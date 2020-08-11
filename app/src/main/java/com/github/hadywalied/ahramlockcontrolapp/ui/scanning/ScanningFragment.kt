@@ -40,10 +40,10 @@ class ScanningFragment : BaseFragment() {
         viewModel.allBluetoothDevicesLiveData.observe(
             viewLifecycleOwner,
             Observer { updateRecyclerList(it) })
-        viewModel.scanFailedLiveData.observe(viewLifecycleOwner, Observer { scanFailedAction(it) })
-        viewModel.connectFailedLiveData.observe(
-            viewLifecycleOwner,
-            Observer { connectionFailedAction(it) })
+        /* viewModel.scanFailedLiveData.observe(viewLifecycleOwner, Observer { scanFailedAction(it) })
+         viewModel.connectFailedLiveData.observe(
+             viewLifecycleOwner,
+             Observer { connectionFailedAction(it) })*/
         viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
             Observer { connectedAction(it.state) })
@@ -93,17 +93,17 @@ class ScanningFragment : BaseFragment() {
         }
     }
 
-    private fun connectionFailedAction(b: Boolean?) {
-        showMaterialDialog(b!!)
-    }
-
-    private fun scanFailedAction(b: Boolean?) {
-        showMaterialDialog(b!!)
-    }
+//    private fun connectionFailedAction(b: Boolean?) {
+//        showMaterialDialog(b!!)
+//    }
+//
+//    private fun scanFailedAction(b: Boolean?) {
+//        showMaterialDialog(b!!)
+//    }
 
     private fun connectedAction(b: ConnectionState.State) {
         when (b) {
-            ConnectionState.State.DISCONNECTED -> showMaterialDialog(false)
+            ConnectionState.State.DISCONNECTING -> showMaterialDialog(false)
             else -> {
                 viewModel.devicesItems.forEach {
                     if (it.address == viewModel.myBleManager?.bluetoothDevice?.address) {
@@ -120,10 +120,25 @@ class ScanningFragment : BaseFragment() {
         with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, list, {
-                    viewModel.connect(viewModel.devicesSet[it.address]!!)
+                    showConnectionPrompt(it)
                 }, {
 //                    repo.delete(it)
                 })
+        }
+    }
+
+    private fun showConnectionPrompt(device: Devices) {
+        with(MaterialAlertDialogBuilder(requireContext())) {
+            setTitle("Connection Prompt")
+            setMessage("Please Choose Connection Type")
+            setPositiveButton("Scan Qr Code") { dialogInterface, _ -> dialogInterface.dismiss() }
+            setNeutralButton("Connect") { dialogInterface, _ ->
+                viewModel.devicesSet[device.address]?.let {
+                    viewModel.connect(it)
+                }
+                dialogInterface.dismiss()
+            }
+            show()
         }
     }
 

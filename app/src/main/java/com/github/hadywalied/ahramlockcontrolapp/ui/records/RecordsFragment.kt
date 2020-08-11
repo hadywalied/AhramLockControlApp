@@ -50,20 +50,20 @@ class RecordsFragment : BaseFragment() {
         addDisposable(
             fab_refresh_records.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
                 updateRecyclerList()
+                recycler_records.adapter?.notifyDataSetChanged()
             })
+        updateRecyclerList()
 
     }
 
     private fun showDisconnectedDialog() {
         //TODO ADD MAterial Dialog For Disconnection
-
     }
 
     private fun updateRecyclerList() {
         with(recycler_records) {
             adapter =
                 RecordsRecyclerViewAdapter(repo)
-            this.adapter?.notifyDataSetChanged()
         }
     }
 

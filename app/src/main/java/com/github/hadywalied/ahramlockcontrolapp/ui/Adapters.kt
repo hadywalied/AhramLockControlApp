@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.Records
+import com.github.hadywalied.ahramlockcontrolapp.Users
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.RecordsRepo
 import kotlinx.coroutines.CoroutineScope
@@ -102,12 +103,18 @@ class DevicesRecyclerViewAdapter(
 class RecordsRecyclerViewAdapter(
     repo: RecordsRepo
 ) : RecyclerView.Adapter<RecordsRecyclerViewAdapter.ViewHolder>() {
-    private var values: List<Records> = listOf()
-    val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
+    private var values: List<Records> = listOf(
+        Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
+        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
+        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
+        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
+    )
+
+    //    val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_records, parent, false)
-        job.start()
+//        job.start()
         return ViewHolder(view)
     }
 
@@ -133,4 +140,62 @@ class RecordsRecyclerViewAdapter(
         }
     }
 }
+
+
+/**
+ * [RecyclerView.Adapter] that can display [Users].
+ *
+ */
+class UsersRecyclerViewAdapter(
+    private var values: List<Users> = listOf(
+        Users("1", "User1", "XX:XX:XX:XX:XX:XX"),
+        Users("2", "User2", "XX:XX:XX:XX:XX:XX"),
+        Users("3", "User3", "XX:XX:XX:XX:XX:XX")
+    ),private val menuDeleteClicked: (Users) -> Unit
+) : RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder>() {
+
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_users, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (values.isNotEmpty()) {
+            val item = values[position]
+            holder.bind(item)
+        }
+    }
+
+    override fun getItemCount(): Int = values.size
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnCreateContextMenuListener {
+        private val nameUser: TextView = view.findViewById(R.id.user_item_name)
+        private val addressUser: TextView = view.findViewById(R.id.user_item_address)
+        val layout_user = view.findViewById<LinearLayout>(R.id.layout_user)
+        var selUser: Users? = null
+        fun bind(user: Users) {
+            selUser = user
+            nameUser.text = user.name
+            addressUser.text = user.address
+            layout_user.setOnCreateContextMenuListener(this)
+        }
+
+        override fun onCreateContextMenu(
+            p0: ContextMenu?,
+            p1: View?,
+            p2: ContextMenu.ContextMenuInfo?
+        ) {
+            p0?.add(0, p1?.id!!, 0, "Remove")?.setOnMenuItemClickListener {
+                selUser?.let { it1 -> menuDeleteClicked(it1) }
+                return@setOnMenuItemClickListener true
+            }//groupId, itemId, order, title
+        }
+    }
+
+
+}
+
 
