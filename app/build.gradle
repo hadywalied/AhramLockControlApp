@@ -114,4 +114,12 @@ dependencies {
     //coil
     implementation("io.coil-kt:coil:0.11.0")
     implementation("io.coil-kt:coil-gif:0.11.0")
+
+    //Dexter Live Permissions
+    implementation 'com.karumi:dexter:6.2.0'
+
+    //QR Code Scanner and google vision
+    implementation 'com.github.nisrulz:qreader:2.1.2'
+    implementation 'com.google.android.gms:play-services-vision:20.1.0'
+
 }

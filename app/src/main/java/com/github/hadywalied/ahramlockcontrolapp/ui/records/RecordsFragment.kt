@@ -46,6 +46,7 @@ class RecordsFragment : BaseFragment() {
         toolbar.setNavigationOnClickListener {
             viewModel.disconnect()
             findNavController().navigateUp()
+            findNavController().popBackStack()
         }
         addDisposable(
             fab_refresh_records.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
@@ -57,7 +58,7 @@ class RecordsFragment : BaseFragment() {
     }
 
     private fun showDisconnectedDialog() {
-        //TODO ADD MAterial Dialog For Disconnection
+        //TODO ADD Material Dialog For Disconnection
     }
 
     private fun updateRecyclerList() {

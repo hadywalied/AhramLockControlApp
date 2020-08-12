@@ -18,7 +18,8 @@
             app:launchSingleTop="true" />
         <action
             android:id="@+id/action_splashFragment_to_setupFragment"
-            app:destination="@id/setupFragment" />
+            app:destination="@id/setupFragment"
+            app:launchSingleTop="true" />
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
@@ -28,7 +29,6 @@
         <action
             android:id="@+id/action_loginFragment_to_scanningFragment"
             app:destination="@id/scanningFragment"
-            app:launchSingleTop="false"
             app:popUpTo="@id/loginFragment" />
         <action
             android:id="@+id/action_loginFragment_to_userDevicesFragment"
@@ -37,8 +37,7 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/userDevicesFragment"
@@ -47,10 +46,8 @@
         tools:layout="@layout/fragment_user_devices" >
         <action
             android:id="@+id/action_userDevicesFragment_to_controlPanelFragment"
-            app:destination="@id/controlPanelFragment" />
-        <action
-            android:id="@+id/action_userDevicesFragment_to_scanningFragment"
-            app:destination="@id/scanningFragment" />
+            app:destination="@id/controlPanelFragment"
+            app:popUpTo="@id/userDevicesFragment" />
     </fragment>
     <fragment
         android:id="@+id/controlPanelFragment"
@@ -58,20 +55,13 @@
         android:label="fragment_control_panel"
         tools:layout="@layout/fragment_control_panel" >
         <action
-            android:id="@+id/action_controlPanelFragment_to_userDevicesFragment"
-            app:destination="@id/userDevicesFragment" />
-        <action
             android:id="@+id/action_controlPanelFragment_to_recordsFragment"
             app:destination="@id/recordsFragment"
-            app:launchSingleTop="false"
-            app:popUpTo="@id/controlPanelFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/controlPanelFragment" />
         <action
             android:id="@+id/action_controlPanelFragment_to_basicInfoFragment"
             app:destination="@id/basicInfoFragment"
-            app:launchSingleTop="false"
-            app:popUpTo="@id/controlPanelFragment"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/controlPanelFragment" />
         <argument
             android:name="connectedDevice"
             app:argType="com.github.hadywalied.ahramlockcontrolapp.Devices" />
@@ -106,7 +96,12 @@
         android:id="@+id/usersFragment"
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userspanel.UsersFragment"
         android:label="fragment_users"
-        tools:layout="@layout/fragment_users" />
+        tools:layout="@layout/fragment_users" >
+        <action
+            android:id="@+id/action_usersFragment_to_usersScanningFragment"
+            app:destination="@id/usersScanningFragment"
+            app:popUpTo="@id/usersFragment" />
+    </fragment>
     <fragment
         android:id="@+id/setupFragment"
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.setupscreen.SetupFragment"
@@ -114,6 +109,12 @@
         tools:layout="@layout/fragment_setup" >
         <action
             android:id="@+id/action_setupFragment_to_scanningFragment"
-            app:destination="@id/scanningFragment" />
+            app:destination="@id/scanningFragment"
+            app:popUpTo="@id/setupFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/usersScanningFragment"
+        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userspanel.UsersScanningFragment"
+        android:label="fragment_users_scanning"
+        tools:layout="@layout/fragment_users_scanning" />
 </navigation>

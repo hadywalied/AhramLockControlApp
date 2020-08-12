@@ -1,6 +1,11 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.mydevices
 
+import android.app.ActionBar
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothGatt
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,6 +13,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -15,6 +22,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import coil.ImageLoader
+import coil.api.load
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
@@ -41,6 +52,7 @@ class SavedDevicesFragment : Fragment() {
         viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
             Observer { handleConnectionState(it.state) })
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             findNavController().navigateUp()
             findNavController().popBackStack()
@@ -68,8 +80,15 @@ class SavedDevicesFragment : Fragment() {
             ConnectionState.State.CONNECTING -> {
                 val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge)
                 progressBar.isIndeterminate = true
+                progressBar.progressTintList = ColorStateList.valueOf(Color.YELLOW);
+
                 alertDialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Connecting")
-                    .setBackground(resources.getDrawable(R.color.primaryTextColor,resources.newTheme()))
+                    .setBackground(
+                        resources.getDrawable(
+                            R.color.primaryTextColor,
+                            resources.newTheme()
+                        )
+                    )
                     .setNegativeButton("Cancel") { dialogInterface, i ->
                         dialogInterface.dismiss()
                         viewModel.disconnect()
@@ -78,15 +97,16 @@ class SavedDevicesFragment : Fragment() {
                     .setView(progressBar).create()
                 alertDialog!!.show()
                 Handler(Looper.getMainLooper()).postDelayed({
-                    if(ConnectionState.State.DISCONNECTED == state){
+                    if (BluetoothGatt.STATE_CONNECTING == viewModel.myBleManager?.connectionState) {
                         Toast.makeText(
                             requireContext(),
                             "Connection Failed",
                             Toast.LENGTH_SHORT
                         ).show()
                         alertDialog!!.dismiss()
+                        viewModel.disconnect()
                     }
-                }, 1500)
+                }, 3000)
             }
         }
     }
@@ -99,6 +119,7 @@ class SavedDevicesFragment : Fragment() {
         toolbar.setNavigationOnClickListener {
             viewModel.disconnect()
             findNavController().navigateUp()
+            findNavController().popBackStack()
         }
         updateRecyclerList()
         swipe.setOnRefreshListener {

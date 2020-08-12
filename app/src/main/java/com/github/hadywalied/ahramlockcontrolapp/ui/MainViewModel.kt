@@ -138,6 +138,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     fun disconnect() {
         myBleManager?.disconnect()?.enqueue()
+        myBleManager?.close()
     }
 
     fun sendData(string: String) {

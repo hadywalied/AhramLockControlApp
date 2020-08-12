@@ -18,31 +18,55 @@ fun ByteArray.toHex(): String {
 fun constructSendCommand(opCode: String, vararg arguments: String): String {
     return when (opCode) {
         "Connect" -> {
-            "C" + "|" + arguments[0]
+            "C" + "|" + arguments[0] + "#"
+        }
+        "Setup" -> {
+            "S" + "|" + arguments[0] + "|" + arguments[1] + "#"
+        }
+        "Disconnect" -> {
+            "DC" + "|" + "#"
         }
         "AddUser" -> {
-            "AU" + "|" + arguments[1]
+            "AUM" + "|" + arguments[0] + "#"
+        }
+        "AddNFC" -> {
+            "AUC" + "#"
+        }
+        "CancelAddingUser" -> {
+            "AUME" + "#"
+        }
+        "CancelAddingNFC" -> {
+            "AUCE" + "#"
         }
         "RmUser" -> {
-            "RU" + "|" + arguments[0]
-        }
-        "Lock" -> {
-            "L" + "|" + arguments[0]
-        }
-        "UnLock" -> {
-            "UL" + "|" + arguments[0]
-        }
-        "GetRecords" -> {
-            "R|" + arguments[0] + "|" + arguments[1]
+            "DU" + "|" + arguments[0] + "#"
         }
         "GetUsers" -> {
-            "U|" + arguments[0]
+            "U" + "#"
         }
-        "ToggleOperationMode" -> {
-            "OP"
+        "CancelGetUsers" -> {
+            "UE" + "#"
+        }
+        "UnLock" -> {
+            "UL" + "#"
+        }
+        "GetAllRecords" -> {
+            "R" + "#"
+        }
+        "UpdateRecords" -> {
+            "RS" + "#"
+        }
+        "CancelRecords" -> {
+            "RC" + "#"
         }
         "Sync" -> {
-            "T" + "|" + arguments[0]
+            "T" + "|" + arguments[0] + "#"
+        }
+        "SetUnlockDelay" -> {
+            "LT" + "|" + arguments[0] + "#"
+        }
+        "GetBattery" -> {
+            "B" + "#"
         }
         else -> {
             "E"

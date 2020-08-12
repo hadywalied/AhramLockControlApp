@@ -7,6 +7,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -44,6 +45,12 @@ class ControlPanelFragment : BaseFragment() {
         viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
             Observer { showDisconnectedDialog(it.state) })
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().navigateUp()
+            findNavController().popBackStack()
+        }
+
         return inflater.inflate(R.layout.fragment_control_panel, container, false)
     }
 
