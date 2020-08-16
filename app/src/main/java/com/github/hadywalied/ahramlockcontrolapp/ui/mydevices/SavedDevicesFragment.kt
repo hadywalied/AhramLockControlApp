@@ -1,11 +1,10 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.mydevices
 
-import android.app.ActionBar
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,8 +12,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -22,12 +19,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
-import coil.api.load
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
 import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.R
+import com.github.hadywalied.ahramlockcontrolapp.UserType
+import com.github.hadywalied.ahramlockcontrolapp.constructSendCommand
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
@@ -40,8 +35,16 @@ import androidx.appcompat.app.AlertDialog as AlertDialog
 
 class SavedDevicesFragment : Fragment() {
 
+
     private lateinit var viewModel: MainViewModel
+    private var alertDialog: AlertDialog? = null
+
     private lateinit var repo: DevicesRepo
+
+    private val shareprefs by lazy {
+        activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,66 +52,12 @@ class SavedDevicesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.connectionStateLiveData?.observe(
-            viewLifecycleOwner,
-            Observer { handleConnectionState(it.state) })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
 
         return inflater.inflate(R.layout.fragment_user_devices, container, false)
-    }
-
-    var alertDialog: AlertDialog? = null
-    private fun handleConnectionState(state: ConnectionState.State) {
-        when (state) {
-            ConnectionState.State.INITIALIZING -> {
-                alertDialog?.dismiss()
-                SavedDevicesFragmentDirections.actionUserDevicesFragmentToControlPanelFragment(
-                    Devices(
-                        viewModel.myBleManager?.bluetoothDevice!!.address,
-                        viewModel.myBleManager?.bluetoothDevice!!.name,
-                        0
-                    )
-                )
-                    .let { action ->
-                        findNavController().navigate(action.actionId, action.arguments)
-                    }
-            }
-            ConnectionState.State.CONNECTING -> {
-                val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge)
-                progressBar.isIndeterminate = true
-                progressBar.progressTintList = ColorStateList.valueOf(Color.YELLOW);
-
-                alertDialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Connecting")
-                    .setBackground(
-                        resources.getDrawable(
-                            R.color.primaryTextColor,
-                            resources.newTheme()
-                        )
-                    )
-                    .setNegativeButton("Cancel") { dialogInterface, i ->
-                        dialogInterface.dismiss()
-                        viewModel.disconnect()
-                    }
-                    .setCancelable(false)
-                    .setView(progressBar).create()
-                alertDialog!!.show()
-                Handler(Looper.getMainLooper()).postDelayed({
-                    if (BluetoothGatt.STATE_CONNECTING == viewModel.myBleManager?.connectionState) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Connection Failed",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        alertDialog!!.dismiss()
-                        viewModel.disconnect()
-                    }
-                }, 3000)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -118,7 +67,6 @@ class SavedDevicesFragment : Fragment() {
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
             viewModel.disconnect()
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
         updateRecyclerList()
@@ -126,23 +74,142 @@ class SavedDevicesFragment : Fragment() {
             updateRecyclerList()
             Handler(Looper.getMainLooper()).postDelayed({ swipe?.isRefreshing = false }, 1500)
         }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.connectionStateLiveData?.observe(
+            viewLifecycleOwner,
+            Observer { handleConnectionState(it.state) })
+
+        viewModel.bleManagerRecievedData?.observe(viewLifecycleOwner, Observer { checkCommand(it) })
+
+        val recentDevice = SavedDevicesFragmentArgs.fromBundle(requireArguments()).recentDevice
+        if (!viewModel.myBleManager?.isConnected!! && recentDevice != null) {
+            val bluetoothDevice =
+                BluetoothAdapter.getDefaultAdapter().getRemoteDevice(recentDevice.address)
+            viewModel.connect(bluetoothDevice)
+            alertDialog = showConnectingDialog()
+        }
+
+        updateRecyclerList()
+    }
+
+    private fun checkCommand(s: String?) {
+        val split: List<String> = s?.split("|")!!
+        when (split.get(0)) {
+            "C" -> {
+                alertDialog?.cancel()
+                when (split[1]) {
+                    "0" -> {
+                        navigateWhenConnected(UserType.ADMIN)
+                    }
+                    "1" -> {
+                        navigateWhenConnected(UserType.USER)
+                    }
+                    "F" -> {
+                        Toast.makeText(requireContext(), "Connection Failed", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleConnectionState(state: ConnectionState.State) {
+        when (state) {
+            ConnectionState.State.READY -> {
+                viewModel.sendData(
+                    constructSendCommand(
+                        "Connect",
+                        viewModel.myBleManager?.bluetoothDevice?.address ?: ""
+                    )
+                )
+            }
+            ConnectionState.State.CONNECTING -> {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (BluetoothGatt.STATE_CONNECTING == viewModel.myBleManager?.connectionState) {
+                        Toast.makeText(
+                            requireActivity(),
+                            "Connection Failed",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        alertDialog!!.dismiss()
+                        viewModel.disconnect()
+                    }
+                }, 3000)
+            }
+            ConnectionState.State.DISCONNECTED -> {
+                alertDialog?.dismiss()
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun showConnectingDialog(): AlertDialog {
+        val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge)
+        progressBar.isIndeterminate = true
+        progressBar.progressTintList = ColorStateList.valueOf(Color.YELLOW);
+        val alertDialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Connecting")
+            .setBackground(
+                resources.getDrawable(
+                    R.color.primaryTextColor,
+                    resources.newTheme()
+                )
+            )
+            .setNegativeButton("Cancel") { dialogInterface, i ->
+                dialogInterface.dismiss()
+                viewModel.disconnect()
+            }
+            .setCancelable(false)
+            .setView(progressBar).create()
+        alertDialog.show()
+        return alertDialog
+    }
+
+    private fun navigateWhenConnected(type: UserType) {
+        alertDialog?.dismiss()
+        val devices = Devices(
+            viewModel.myBleManager?.bluetoothDevice?.address ?: "",
+            viewModel.myBleManager?.bluetoothDevice?.name ?: "",
+            0
+        )
+        SavedDevicesFragmentDirections.actionUserDevicesFragmentToControlPanelFragment(
+            devices,
+            type
+        )
+            .let { action ->
+                findNavController().navigate(action.actionId, action.arguments)
+            }
+        with(shareprefs?.edit()) {
+            this?.putString(getString(R.string.shared_device_name), devices.deviceName)
+            this?.putString(getString(R.string.shared_device_address), devices.address)
+            this?.putString(getString(R.string.shared_device_rssi), devices.rssi.toString())
+            this?.commit()
+        }
     }
 
     private fun updateRecyclerList() {
         with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, clicked = {
-                    if (!viewModel.myBleManager?.isConnected!!) {
-                        val bluetoothDevice =
-                            BluetoothAdapter.getDefaultAdapter().getRemoteDevice(it.address)
-                        viewModel.connect(bluetoothDevice)
-                    }
-
+                    val bluetoothDevice =
+                        BluetoothAdapter.getDefaultAdapter().getRemoteDevice(it.address)
+                    viewModel.connect(bluetoothDevice)
+                    alertDialog = showConnectingDialog()
                 }, menuDeleteClicked = {
                     repo.delete(it)
                     updateRecyclerList()
                 })
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.disconnect()
     }
 
 

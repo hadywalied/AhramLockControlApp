@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
+import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_setup.*
 import java.util.concurrent.TimeUnit
@@ -25,7 +27,6 @@ class SetupFragment : BaseFragment() {
             TransitionInflater.from(context).inflateTransition(android.R.transition.move)
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
 
@@ -38,6 +39,11 @@ class SetupFragment : BaseFragment() {
             layout_continue.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
                 findNavController().navigate(R.id.action_setupFragment_to_scanningFragment)
             })
+    }
+    override fun onDetach() {
+        super.onDetach()
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.disconnect()
     }
 
 }

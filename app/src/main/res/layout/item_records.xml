@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="8dp"
-    android:layout_margin="8dp"
     app:cardElevation="8dp">
 
     <LinearLayout
@@ -21,30 +21,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:background="@android:color/transparent"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/record_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/orange_800"
                 android:textSize="28sp"
                 tools:text="Name" />
 
             <TextView
                 android:id="@+id/record_item_addr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:textColor="@color/primaryTextColor"
                 tools:text="Address" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0.4"
-            android:text="Access Time:" />
-
 
         <TextView
             android:id="@+id/record_item_time"

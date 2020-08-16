@@ -56,7 +56,7 @@ class SplashFragment : Fragment() {
             } else
                 Handler(Looper.getMainLooper()).postDelayed({
                     findNavController().navigate(
-                        R.id.action_splashFragment_to_loginFragment,
+                        R.id.action_splashFragment_to_welcomeScreenFragment,
                         null,
                         null,
                         FragmentNavigatorExtras(imageView to "logo Transition")

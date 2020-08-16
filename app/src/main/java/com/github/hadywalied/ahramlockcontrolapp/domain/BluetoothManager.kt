@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -47,13 +49,17 @@ class MyBleManager(context: Context) : ObservableBleManager(context) {
 
     private val callback = object : MyCallback() {
         override fun onInvalidDataReceived(device: BluetoothDevice, data: Data) {
-            super.onInvalidDataReceived(device, data)
-            Timber.e("onInvalidDataReceived: data")
+//            super.onInvalidDataReceived(device, data)
+            Timber.e("onInvalidDataReceived: data " + data)
         }
 
         override fun fromOnDataSent(device: BluetoothDevice, data: String) {
             Timber.d(device.name + " " + device.address + " " + data)
             _receivedDataLiveData.postValue(data)
+            Handler(Looper.getMainLooper()).postDelayed(
+                { _receivedDataLiveData.postValue("") },
+                100
+            )
         }
     }
 
@@ -130,7 +136,7 @@ abstract class MyCallback : ProfileDataCallback,
             return
         }
         val received = data.getStringValue(0)
-        fromOnDataSent(device, received ?: "")
+//        fromOnDataSent(device, received ?: "")
     }
 }
 

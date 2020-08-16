@@ -55,7 +55,7 @@ class DevicesRecyclerViewAdapter(
         View.OnCreateContextMenuListener {
         val deviceName = view.findViewById<TextView>(R.id.device_item_name)
         val address = view.findViewById<TextView>(R.id.device_item_mac)
-        val rssi = view.findViewById<TextView>(R.id.rssi_item_text)
+//        val rssi = view.findViewById<TextView>(R.id.rssi_item_text)
         val rssiIcon = view.findViewById<ImageView>(R.id.rssi_item_icon)
         val layout = view.findViewById<LinearLayout>(R.id.devices_item_layout)
         var selDevice: Devices? = null
@@ -64,7 +64,7 @@ class DevicesRecyclerViewAdapter(
             device.also {
                 deviceName.text = it.deviceName ?: "Unnamed Device"
                 address.text = it.address
-                rssi.text = it.rssi.toString()
+//                rssi.text = it.rssi.toString()
                 //TODO Change The RSSI Text
                 when (abs(it.rssi)) {
                     in 0..50 -> {
@@ -103,18 +103,13 @@ class DevicesRecyclerViewAdapter(
 class RecordsRecyclerViewAdapter(
     repo: RecordsRepo
 ) : RecyclerView.Adapter<RecordsRecyclerViewAdapter.ViewHolder>() {
-    private var values: List<Records> = listOf(
-        Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
-        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
-        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
-        , Records("XX:XX:XX:XX:XX:XX", "User1", "180101135555")
-    )
+    private var values: List<Records> = listOf()
 
-    //    val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
+        val job = CoroutineScope(Dispatchers.IO).launch { values = repo.getAll() }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_records, parent, false)
-//        job.start()
+        job.start()
         return ViewHolder(view)
     }
 

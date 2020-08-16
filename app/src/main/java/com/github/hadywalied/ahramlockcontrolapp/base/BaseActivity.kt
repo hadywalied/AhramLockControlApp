@@ -42,11 +42,6 @@ open class BaseActivity : AppCompatActivity() {
 //        Timber.plant(DebugTree())
         init()
 
-        val navController = findNavController(R.id.nav_host_fragment_container)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-
-        // This line is only necessary if using the default action bar.
-        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onStart() {

@@ -11,33 +11,12 @@
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
-            android:id="@+id/action_splashFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:launchSingleTop="true" />
-        <action
             android:id="@+id/action_splashFragment_to_setupFragment"
             app:destination="@id/setupFragment"
             app:launchSingleTop="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.welcome.WelcomeScreenFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_scanningFragment"
-            app:destination="@id/scanningFragment"
-            app:popUpTo="@id/loginFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_userDevicesFragment"
-            app:destination="@id/userDevicesFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/nav_default_exit_anim"
-            app:popUpTo="@id/loginFragment" />
+            android:id="@+id/action_splashFragment_to_welcomeScreenFragment"
+            app:destination="@id/welcomeScreenFragment" />
     </fragment>
     <fragment
         android:id="@+id/userDevicesFragment"
@@ -48,6 +27,10 @@
             android:id="@+id/action_userDevicesFragment_to_controlPanelFragment"
             app:destination="@id/controlPanelFragment"
             app:popUpTo="@id/userDevicesFragment" />
+        <argument
+            android:name="recentDevice"
+            app:argType="com.github.hadywalied.ahramlockcontrolapp.Devices"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/controlPanelFragment"
@@ -69,6 +52,9 @@
             android:id="@+id/action_controlPanelFragment_to_usersFragment"
             app:destination="@id/usersFragment"
             app:popUpTo="@id/controlPanelFragment" />
+        <argument
+            android:name="userType"
+            app:argType="com.github.hadywalied.ahramlockcontrolapp.UserType" />
     </fragment>
     <fragment
         android:id="@+id/scanningFragment"
@@ -81,6 +67,9 @@
             app:launchSingleTop="false"
             app:popUpTo="@id/scanningFragment"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_scanningFragment_to_controlPanelFragment"
+            app:destination="@id/controlPanelFragment" />
     </fragment>
     <fragment
         android:id="@+id/recordsFragment"
@@ -117,4 +106,17 @@
         android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userspanel.UsersScanningFragment"
         android:label="fragment_users_scanning"
         tools:layout="@layout/fragment_users_scanning" />
+    <fragment
+        android:id="@+id/welcomeScreenFragment"
+        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.welcome.WelcomeScreenFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_welcomeScreenFragment_to_userDevicesFragment"
+            app:destination="@id/userDevicesFragment"
+            app:popUpTo="@id/welcomeScreenFragment" />
+        <action
+            android:id="@+id/action_welcomeScreenFragment_to_scanningFragment"
+            app:destination="@id/scanningFragment" />
+    </fragment>
 </navigation>

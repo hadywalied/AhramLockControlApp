@@ -25,7 +25,6 @@ class UsersFragment : Fragment() {
         // Inflate the layout for this fragment
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
 
@@ -52,11 +51,11 @@ class UsersFragment : Fragment() {
     }
 
     private fun initiateAddUserSequence() {
-//        TODO
+//        TODO initiateAddUserSequence
     }
 
     private fun initiateNFCSequence() {
-//        TODO
+//        TODO initiateNFCSequence
     }
 
     private fun updateRecyclerList() {

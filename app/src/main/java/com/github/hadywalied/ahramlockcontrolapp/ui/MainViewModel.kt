@@ -111,6 +111,58 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }, 3750)
     }
 
+    fun scanUsers() {
+        _loadingLiveData.postValue(true)
+        devicesItems.clear()
+        devicesSet.clear()
+
+        val scanner = BluetoothLeScannerCompat.getScanner()
+        val settings: ScanSettings =
+            ScanSettings.Builder()
+                .setLegacy(false)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setUseHardwareBatchingIfSupported(false)
+                .build()
+        val filters: MutableList<ScanFilter> = ArrayList()
+
+        val scanCallback = object : ScanCallback() {
+            override fun onScanFailed(errorCode: Int) {
+                _scanFailedLiveData.postValue(true)
+                super.onScanFailed(errorCode)
+            }
+
+            override fun onScanResult(callbackType: Int, result: ScanResult) {
+                var bool = false
+                for (dev in devicesItems) {
+                    if (dev.address == result.device.address) {
+                        dev.rssi = result.rssi
+                        bool = true
+                    }
+                }
+                if (!bool) {
+                    devicesItems.add(
+                        Devices(
+                            result.device.address,
+                            result.device.name,
+                            result.rssi
+                        )
+                    )
+                    devicesSet[result.device.address] = result.device
+                }
+                _allBluetoothDevicesLiveData.postValue(devicesItems)
+                Timber.d("onScanResult() returned: $result")
+                _scanFailedLiveData.postValue(false)
+                super.onScanResult(callbackType, result)
+            }
+        }
+        scanner.startScan(filters, settings, scanCallback)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            scanner.stopScan(scanCallback)
+            _loadingLiveData.postValue(false)
+        }, 3750)
+    }
+
     fun connect(device: BluetoothDevice) {
         Timber.d("Connect")
         with(myBleManager!!) {
@@ -138,7 +190,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     fun disconnect() {
         myBleManager?.disconnect()?.enqueue()
-        myBleManager?.close()
     }
 
     fun sendData(string: String) {

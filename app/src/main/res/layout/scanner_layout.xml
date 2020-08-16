@@ -16,5 +16,13 @@
         android:layout_height="200dp"
         android:layout_gravity="center"
         android:background="@drawable/rectangle" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:textColor="@color/secondaryTextColor"
+        android:background="@color/primaryTextColor"
+        />
 </FrameLayout>
 

@@ -1,6 +1,8 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.controlpanel
 
 
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -16,8 +18,10 @@ import coil.ImageLoader
 import coil.api.load
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.R
+import com.github.hadywalied.ahramlockcontrolapp.UserType
 import com.github.hadywalied.ahramlockcontrolapp.constructSendCommand
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
@@ -27,13 +31,18 @@ import kotlinx.android.synthetic.main.fragment_control_panel.*
 import kotlinx.android.synthetic.main.fragment_control_panel.toolbar
 import kotlinx.android.synthetic.main.locker_layout.*
 import no.nordicsemi.android.ble.livedata.state.ConnectionState
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
 class ControlPanelFragment : BaseFragment() {
 
     private lateinit var viewModel: MainViewModel
-    private lateinit var repo: DevicesRepo
+    private val shareprefs by lazy {
+        activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
+    }
+    var delay: Int? = 0
+    var device: Devices? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +53,13 @@ class ControlPanelFragment : BaseFragment() {
 
         viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
-            Observer { showDisconnectedDialog(it.state) })
+            androidx.lifecycle.Observer { showDisconnectedDialog(it.state) })
+
+        viewModel.bleManagerRecievedData?.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { checkCommand(it) })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
 
@@ -56,45 +68,41 @@ class ControlPanelFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val delay: Long = 6000
-        val device = ControlPanelFragmentArgs.fromBundle(requireArguments()).connectedDevice
-        toolbar.title = device.deviceName
-        toolbar.subtitle = device.address
+        delay = shareprefs?.getInt(getString(R.string.delay_index), 6000)
+
+        device = ControlPanelFragmentArgs.fromBundle(requireArguments()).connectedDevice
+        when (ControlPanelFragmentArgs.fromBundle(requireArguments()).userType) {
+            UserType.ADMIN -> {
+                chip_group.visibility = View.VISIBLE
+                fab_records.visibility = View.VISIBLE
+            }
+            UserType.USER -> {
+                chip_group.visibility = View.INVISIBLE
+                fab_records.visibility = View.INVISIBLE
+            }
+        }
+        toolbar.title = device?.deviceName
+        toolbar.subtitle = device?.address
         toolbar.navigationIcon =
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
             viewModel.disconnect()
-            findNavController().navigateUp()
             findNavController().popBackStack()
         }
-        btn_count.load(R.drawable.ic_lock){
+        btn_count.load(R.drawable.ic_lock) {
             crossfade(true)
             placeholder(R.drawable.ic_lock)
         }
 
-        addDisposable(btn_count.clicks().throttleFirst(delay, TimeUnit.MILLISECONDS).subscribe {
+        addDisposable(
+            btn_count.clicks().throttleFirst(10000, TimeUnit.MILLISECONDS).subscribe {
 //            btn_count.text = "unlocked"
-            showImageViewGears()
-
-            viewModel.sendData(constructSendCommand("UnLock", device.address))
-
-            object : CountDownTimer(delay, 100) {
-                override fun onTick(millisUntilFinished: Long) {
-                    tv_counter.text =
-                        "seconds remaining till Locking: " + (millisUntilFinished / 1000).toString()
-                }
-
-                override fun onFinish() {
-                    tv_counter.text = "Locked!"
-//                    btn_count.text = "UnLock"
-                    viewModel.sendData(constructSendCommand("Lock", device.address))
-                    btn_count.load(R.drawable.ic_lock){
-                        crossfade(true)
-                        placeholder(R.drawable.ic_lock)
-                    }
-                }
-            }.start()
-        })
+                showImageViewGears()
+                viewModel.sendData(constructSendCommand("UnLock", device?.address ?: ""))
+                chip_group.isClickable = false
+                fab_records.isEnabled = false
+                tv_counter.text = "Unlocking, Please Wait"
+            })
 
         addDisposable(
             fab_records.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
@@ -110,18 +118,57 @@ class ControlPanelFragment : BaseFragment() {
 
     }
 
+    private fun checkCommand(s: String?) {
+        val split: List<String> = s?.split("|")!!
+        val delayDuration: Long = when (delay) {
+            0 -> 3000
+            1 -> 5000
+            2 -> 8000
+            else -> 6000
+        }
+        when (split.get(0)) {
+            "UL" -> {
+                btn_count.load(R.drawable.ic_check_circle) {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_lock)
+                }
+                object : CountDownTimer(delayDuration, 100) {
+                    override fun onTick(millisUntilFinished: Long) {
+                        tv_counter?.text =
+                            "seconds remaining till Locking: " + (millisUntilFinished / 1000).toString()
+                    }
+
+                    override fun onFinish() {
+                        tv_counter?.text = "Locked!"
+//                    btn_count.text = "UnLock"
+                        chip_group?.isClickable = true
+                        fab_records?.isEnabled = true
+                        btn_count?.load(R.drawable.ic_lock) {
+                            crossfade(true)
+                            placeholder(R.drawable.ic_lock)
+                        }
+                    }
+                }.start()
+            }
+            else -> {
+                Timber.d(s)
+            }
+        }
+    }
+
     private fun showDisconnectedDialog(it: ConnectionState.State) {
         val dialog =
             MaterialAlertDialogBuilder(requireContext()).setView(R.layout.info_connection_lost)
                 .setCancelable(false)
                 .setNeutralButton("Reconnect") { dialogInterface, _ ->
                     run {
-                        findNavController().navigateUp()
-                        findNavController().popBackStack()
+                        val bluetoothDevice =
+                            BluetoothAdapter.getDefaultAdapter().getRemoteDevice(device?.address)
+                        viewModel.connect(bluetoothDevice)
                         dialogInterface.dismiss()
                     }
                 }.create()
-        if (ConnectionState.State.CONNECTING == it || ConnectionState.State.INITIALIZING == it) dialog.dismiss()
+        if (ConnectionState.State.CONNECTING == it || ConnectionState.State.READY == it) dialog.dismiss()
         else if (ConnectionState.State.DISCONNECTED == it) dialog.show()
     }
 
@@ -139,6 +186,12 @@ class ControlPanelFragment : BaseFragment() {
             crossfade(true)
             placeholder(R.drawable.ic_lock)
         }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.disconnect()
     }
 
 }

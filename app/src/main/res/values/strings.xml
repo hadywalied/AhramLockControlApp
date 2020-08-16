@@ -58,5 +58,9 @@
     <string name="edit_name">Edit Name</string>
     <string name="connection_lost">Connection Lost</string>
     <string name="firstflag">flag</string>
+    <string name="shared_device_name">RecentDeviceName</string>
+    <string name="shared_device_address">RecentDeviceAddress</string>
+    <string name="shared_device_rssi">RecentDeviceRSSI</string>
+    <string name="delay_index">delay</string>
 
 </resources>

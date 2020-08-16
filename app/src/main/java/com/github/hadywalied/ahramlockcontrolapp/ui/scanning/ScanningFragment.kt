@@ -1,21 +1,27 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.scanning
 
 import android.Manifest
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.SurfaceView
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.annotation.UiThread
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.Devices
-import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
-import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
-import com.github.hadywalied.ahramlockcontrolapp.R
+import com.github.hadywalied.ahramlockcontrolapp.*
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
+import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
+import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.rxbinding4.view.clicks
 import com.karumi.dexter.Dexter
@@ -26,12 +32,13 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import github.nisrulz.qreader.QRDataListener
 import github.nisrulz.qreader.QREader
-import kotlinx.android.synthetic.main.recycler_layout.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import kotlinx.android.synthetic.main.fragment_scanning.*
-import kotlinx.android.synthetic.main.fragment_scanning.state_scanning
-import kotlinx.android.synthetic.main.fragment_scanning.toolbar
 import kotlinx.android.synthetic.main.info_no_devices_found_layout.*
+import kotlinx.android.synthetic.main.recycler_layout.*
 import no.nordicsemi.android.ble.livedata.state.ConnectionState
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class ScanningFragment : BaseFragment() {
@@ -47,6 +54,10 @@ class ScanningFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
         //region observers
         viewModel.loadingLiveData.observe(
             viewLifecycleOwner,
@@ -60,14 +71,11 @@ class ScanningFragment : BaseFragment() {
              Observer { connectionFailedAction(it) })*/
         viewModel.connectionStateLiveData?.observe(
             viewLifecycleOwner,
-            Observer { connectedAction(it.state) })
+            Observer {
+                connectedAction(it.state)
+            })
+        viewModel.bleManagerRecievedData?.observe(viewLifecycleOwner, Observer { checkCommand(it) })
         //endregion
-
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            findNavController().navigateUp()
-            findNavController().popBackStack()
-        }
-
         return inflater.inflate(R.layout.fragment_scanning, container, false)
     }
 
@@ -77,11 +85,18 @@ class ScanningFragment : BaseFragment() {
         viewModel.scan()
         //region toolbar
         toolbar.inflateMenu(R.menu.scan_menu)
+        toolbar.setNavigationIcon(R.drawable.ic_back)
+        toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
         toolbar.subtitle = "Please Choose your Device"
         toolbar.setOnMenuItemClickListener { item ->
             return@setOnMenuItemClickListener when (item.itemId) {
                 R.id.menu_devices_item -> {
-                    findNavController().navigate(R.id.action_scanningFragment_to_userDevicesFragment)
+                    ScanningFragmentDirections.actionScanningFragmentToUserDevicesFragment(null)
+                        .let { action ->
+                            findNavController().navigate(action.actionId, action.arguments)
+                        }
                     true
                 }
                 else -> false
@@ -96,16 +111,58 @@ class ScanningFragment : BaseFragment() {
         })
         state_scanning.isIndeterminate = true
         state_scanning.visibility = View.VISIBLE
-        //region alertDialog
-        alertDialog = AlertDialog.Builder(requireContext()).setTitle("Scan Qr Code")
-            .setMessage("Please scan the QR-Code Provided on the Lock Package")
-            .setCancelable(true)
-            .setView(R.layout.scanner_layout)
-            .create()
-        //endregion
     }
 
     //region helper functions
+
+    private fun checkCommand(s: String?) {
+        val split: List<String> = s?.split("|")!!
+        when (split.get(0)) {
+            "C" -> {
+                when (split[1]) {
+                    "0" -> navigateWhenConnected(UserType.ADMIN)
+                    "1" -> navigateWhenConnected(UserType.USER)
+                    "F" -> {
+                        alertDialog?.dismiss()
+                        Toast.makeText(requireContext(), "Connection Failed", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                }
+            }
+            "S" -> {
+                alertDialog?.cancel()
+                qrEader?.stop()
+                if (split[1] == "T") {
+                    viewModel.sendData(constructSendCommand("Sync", getCurrentTimeDate()))
+                    navigateWhenConnected(UserType.ADMIN)
+                } else {
+                    Toast.makeText(requireContext(), "Connection Failed", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+            else -> {
+                Timber.d(s)
+            }
+        }
+    }
+
+    private fun navigateWhenConnected(userType: UserType) {
+        alertDialog?.dismiss()
+        viewModel.devicesItems.forEach {
+            if (it.address == viewModel.myBleManager?.bluetoothDevice?.address) {
+                repo.insert(it)
+                ScanningFragmentDirections.actionScanningFragmentToControlPanelFragment(
+                    it,
+                    userType
+                ).let { action ->
+                    findNavController().navigate(action.actionId, action.arguments)
+                }
+                return@forEach
+            }
+        }
+    }
+
     private fun onScanningFinished(bool: Boolean) {
         swipe?.isRefreshing = bool
         if (bool)
@@ -122,25 +179,61 @@ class ScanningFragment : BaseFragment() {
 
     private fun connectedAction(b: ConnectionState.State) {
         when (b) {
-            ConnectionState.State.DISCONNECTING -> showMaterialDialog(false)
-            else -> {
-                viewModel.devicesItems.forEach {
-                    if (it.address == viewModel.myBleManager?.bluetoothDevice?.address) {
-                        repo.insert(it)
-                        findNavController().navigate(R.id.action_scanningFragment_to_userDevicesFragment)
-                        return@forEach
-                    }
-                }
+            ConnectionState.State.READY -> {
+                val devices = Devices(
+                    viewModel.myBleManager?.bluetoothDevice!!.address,
+                    viewModel.myBleManager?.bluetoothDevice!!.name,
+                    0
+                )
+                showConnectionPrompt(devices)
+            }
+            ConnectionState.State.INITIALIZING -> {
+                alertDialog?.dismiss()
+            }
+            ConnectionState.State.CONNECTING -> {
+            }
+            ConnectionState.State.DISCONNECTED -> {
+                alertDialog?.dismiss()
             }
         }
     }
+
+    private fun showConnectingDialog(): AlertDialog {
+        val progressBar = ProgressBar(context, null, android.R.attr.progressBarStyleLarge)
+        progressBar.isIndeterminate = true
+        progressBar.progressTintList = ColorStateList.valueOf(Color.YELLOW);
+        val alertDialog = MaterialAlertDialogBuilder(requireContext()).setTitle("Connecting")
+            .setBackground(
+                resources.getDrawable(
+                    R.color.primaryTextColor,
+                    resources.newTheme()
+                )
+            )
+            .setNegativeButton("Cancel") { dialogInterface, i ->
+                dialogInterface.dismiss()
+                viewModel.disconnect()
+            }
+            .setCancelable(false)
+            .setView(progressBar).create()
+        alertDialog.show()
+        return alertDialog
+    }
+
 
     private fun updateRecyclerList(list: List<Devices>?) {
         with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, list, {
-                    showConnectionPrompt(it)
+                    viewModel.disconnect()
+                    connectToDevice(it)
+                    alertDialog = showConnectingDialog()
                 }, {})
+        }
+    }
+
+    private fun connectToDevice(devices: Devices) {
+        viewModel.devicesSet[devices.address]?.let {
+            viewModel.connect(it)
         }
     }
 
@@ -148,61 +241,65 @@ class ScanningFragment : BaseFragment() {
         with(MaterialAlertDialogBuilder(requireContext())) {
             setTitle("Connection Prompt")
             setMessage("Please Choose Connection Type")
+            setCancelable(false)
             setPositiveButton("Scan Qr Code") { dialogInterface, _ ->
-                run {
-                    dialogInterface.dismiss()
-                    alertDialog?.show()
-                    if (permissionGranted) {
-                        alertDialog?.show()
-
-                        val cameraView = alertDialog?.findViewById<SurfaceView>(R.id.camera_view)
-                        qrEader = QREader.Builder(requireContext(), cameraView, QRDataListener {
-                            sendAdminCommand(device, it)
-                            alertDialog?.dismiss()
+                dialogInterface.dismiss()
+                alertDialog = qrScannerDialog()
+                alertDialog?.show()
+                if (permissionGranted) {
+                    val cameraView = alertDialog?.findViewById<SurfaceView>(R.id.camera_view)
+                    qrEader =
+                        QREader.Builder(requireContext(), cameraView, QRDataListener { value ->
+                            Timber.d("Recieved Pin: $value")
+                            Observable.empty<String>()
+                                .defaultIfEmpty(value)
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe { s: String ->
+                                    sendAdminCommand(device, s)
+                                    alertDialog?.dismiss()
+                                    alertDialog = showConnectingDialog()
+                                    qrEader?.stop()
+                                }
                         }).facing(QREader.BACK_CAM)
                             .enableAutofocus(true)
                             .width(cameraView?.width!!)
                             .height(cameraView.height)
                             .build()
-                        qrEader?.initAndStart(cameraView)
-                        qrEader?.start()
-                    }
+                    qrEader?.initAndStart(cameraView)
                 }
+
             }
-            setNeutralButton("Connect") { dialogInterface, _ ->
+            setNegativeButton("Connect") { dialogInterface, _ ->
                 sendUserCommand(device)
                 dialogInterface.dismiss()
+                alertDialog = showConnectingDialog()
+            }
+            setNeutralButton("cancel") { dialogInterface, i ->
+                dialogInterface.dismiss()
+                alertDialog?.dismiss()
+                viewModel.disconnect()
             }
             show()
         }
+    }
+
+    private fun qrScannerDialog(): AlertDialog {
+        return MaterialAlertDialogBuilder(requireContext()).setTitle("Scan Qr Code")
+            .setMessage("Please scan the QR-Code Provided on the Lock Package")
+            .setCancelable(true)
+            .setView(R.layout.scanner_layout)
+            .create()
     }
 
     private fun sendUserCommand(device: Devices) {
-        viewModel.devicesSet[device.address]?.let {
-            viewModel.connect(it)
-        }
-        TODO("Not yet implemented")
+        val addr = device.address.filter { it.isLetterOrDigit() }
+        viewModel.sendData(constructSendCommand("Connect", addr))
     }
 
+    @UiThread
     private fun sendAdminCommand(device: Devices, pin: String?) {
-        TODO("Not yet implemented")
-    }
-
-    private fun showMaterialDialog(bool: Boolean) {
-        with(MaterialAlertDialogBuilder(requireContext())) {
-            when (bool) {
-                false -> {
-                    setView(R.layout.info_failed_layout)
-                    setTitle("Try Again")
-                }
-                true -> {
-                    setView(R.layout.info_success_layout)
-                    setTitle("Success")
-                }
-            }
-            setNeutralButton("continue") { dialogInterface, _ -> dialogInterface.dismiss() }
-            show()
-        }
+        val addr = device.address.filter { it.isLetterOrDigit() }
+        viewModel.sendData(constructSendCommand("Setup", addr, pin ?: "0"))
     }
 
     private fun requestPermissions() {
@@ -242,7 +339,15 @@ class ScanningFragment : BaseFragment() {
 
     override fun onPause() {
         super.onPause()
+        qrEader?.stop()
         qrEader?.releaseAndCleanup()
+    }
+
+
+    override fun onDetach() {
+        super.onDetach()
+        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.disconnect()
     }
 
 }

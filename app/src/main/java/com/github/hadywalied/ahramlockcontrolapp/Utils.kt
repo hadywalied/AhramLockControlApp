@@ -2,6 +2,10 @@ package com.github.hadywalied.ahramlockcontrolapp
 
 import android.content.Context
 import android.provider.Settings
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 // IGNORE This One
 fun ByteArray.toHex(): String {
@@ -10,6 +14,9 @@ fun ByteArray.toHex(): String {
     return stringbuilder.toString()
 }
 
+enum class UserType {
+    ADMIN, USER
+}
 
 /**
  * @param opCode is the OpCode that is being transmitted
@@ -68,6 +75,9 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
         "GetBattery" -> {
             "B" + "#"
         }
+        "GetDelay" -> {
+            "LT" + "#"
+        }
         else -> {
             "E"
         }
@@ -75,10 +85,13 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
 }
 
 fun getTimeDate(customFormat: String) =
-    "20${customFormat[0]}${customFormat[1]}" +
-            "-${customFormat[2]}${customFormat[3]}-" +
-            "${customFormat[4]}${customFormat[5]}" + "T${customFormat[6]}${customFormat[7]}:" +
-            "${customFormat[8]}${customFormat[9]}:" + "${customFormat[10]}${customFormat[11]}"
+    "Time: ${customFormat[0]}${customFormat[1]}:" +
+            "${customFormat[2]}${customFormat[3]}:" +
+            "${customFormat[4]}${customFormat[5]}" + "\nDate: ${customFormat[6]}${customFormat[7]}-" +
+            "${customFormat[8]}${customFormat[9]}-" + "20${customFormat[10]}${customFormat[11]}"
+
+fun getCurrentTimeDate() =
+    SimpleDateFormat("HHmmssddMMYYYY", Locale.US ).format(Calendar.getInstance().getTime()).toString()
 
 fun isLocationAvailable(context: Context): Boolean {
     var locationMode = Settings.Secure.LOCATION_MODE_OFF
