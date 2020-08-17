@@ -12,6 +12,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
+/**
+ * the entities of the project are @see Devices and Records and Users
+ * see declarations below
+ **/
+
+
 @Parcelize
 @Entity(tableName = "devices")
 data class Devices(

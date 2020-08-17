@@ -142,11 +142,8 @@ class RecordsRecyclerViewAdapter(
  *
  */
 class UsersRecyclerViewAdapter(
-    private var values: List<Users> = listOf(
-        Users("1", "User1", "XX:XX:XX:XX:XX:XX"),
-        Users("2", "User2", "XX:XX:XX:XX:XX:XX"),
-        Users("3", "User3", "XX:XX:XX:XX:XX:XX")
-    ),private val menuDeleteClicked: (Users) -> Unit
+    private var values: List<Users> = listOf(),
+    private val menuDeleteClicked: (Users) -> Unit
 ) : RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder>() {
 
 

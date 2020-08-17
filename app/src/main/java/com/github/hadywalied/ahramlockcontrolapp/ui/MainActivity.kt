@@ -50,8 +50,9 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    /* no-op */
     private fun updateLocationUi(b: Boolean?) {
-
+// TODO: 17/08/2020 add implementation here
     }
 
     override fun onStart() {
@@ -64,5 +65,8 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
         Timber.d("Receivers Un Registered")
         viewModel.unRegisterReceivers(this.application)
+        if (viewModel.myBleManager?.isConnected!!) {
+            viewModel.disconnect()
+        }
     }
 }

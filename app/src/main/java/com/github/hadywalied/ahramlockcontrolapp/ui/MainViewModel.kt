@@ -115,7 +115,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         _loadingLiveData.postValue(true)
         devicesItems.clear()
         devicesSet.clear()
-
         val scanner = BluetoothLeScannerCompat.getScanner()
         val settings: ScanSettings =
             ScanSettings.Builder()
@@ -124,13 +123,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 .setUseHardwareBatchingIfSupported(false)
                 .build()
         val filters: MutableList<ScanFilter> = ArrayList()
-
         val scanCallback = object : ScanCallback() {
             override fun onScanFailed(errorCode: Int) {
                 _scanFailedLiveData.postValue(true)
                 super.onScanFailed(errorCode)
             }
-
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 var bool = false
                 for (dev in devicesItems) {
@@ -160,7 +157,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         Handler(Looper.getMainLooper()).postDelayed({
             scanner.stopScan(scanCallback)
             _loadingLiveData.postValue(false)
-        }, 3750)
+        }, 3000)
     }
 
     fun connect(device: BluetoothDevice) {
@@ -211,13 +208,6 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
     //endregion
-
-    override fun onCleared() {
-        super.onCleared()
-        if (myBleManager?.isConnected!!) {
-            disconnect()
-        }
-    }
 
     fun unRegisterReceivers(app: Application) {
         app.unregisterReceiver(MyBluetoothBroadcastReceiver)

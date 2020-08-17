@@ -7,13 +7,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-// IGNORE This One
-fun ByteArray.toHex(): String {
-    val stringbuilder = StringBuilder()
-    forEach { byte -> stringbuilder.append(byte.toString(16)) }
-    return stringbuilder.toString()
-}
-
 enum class UserType {
     ADMIN, USER
 }
@@ -84,15 +77,20 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
     }
 }
 
+// format is Time: HH:mm:ss
+//           Date: dd-MM-YY
 fun getTimeDate(customFormat: String) =
     "Time: ${customFormat[0]}${customFormat[1]}:" +
             "${customFormat[2]}${customFormat[3]}:" +
             "${customFormat[4]}${customFormat[5]}" + "\nDate: ${customFormat[6]}${customFormat[7]}-" +
             "${customFormat[8]}${customFormat[9]}-" + "20${customFormat[10]}${customFormat[11]}"
 
+//this is a helper function to calculate the time and puts it into the required format that is HHmmssddMMYYYY
 fun getCurrentTimeDate() =
-    SimpleDateFormat("HHmmssddMMYYYY", Locale.US ).format(Calendar.getInstance().getTime()).toString()
+    SimpleDateFormat("HHmmssddMMYYYY", Locale.US).format(Calendar.getInstance().time)
+        .toString()
 
+//checks if the location services is available or not.
 fun isLocationAvailable(context: Context): Boolean {
     var locationMode = Settings.Secure.LOCATION_MODE_OFF
     try {

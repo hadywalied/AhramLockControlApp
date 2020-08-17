@@ -7,15 +7,27 @@ import android.content.Intent
 import androidx.lifecycle.MutableLiveData
 import timber.log.Timber
 
+
+/**
+ * these are a LiveData components responsible for sending the signal
+ * when location services and bluetooth services is lost
+ */
 val bluetoothStateLiveData = MutableLiveData(true)
 val locationStateLiveData = MutableLiveData(true)
 
+/**
+ * this is a location broadcast receiver to send a signal when location services is lost
+ */
 val MyLocationBroadcastReceiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         locationStateLiveData.postValue(isLocationAvailable(context))
     }
 }
 
+
+/**
+ * this is a location broadcast receiver to send a signal when the Bluetooth service is lost
+ */
 val MyBluetoothBroadcastReceiver = object : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
