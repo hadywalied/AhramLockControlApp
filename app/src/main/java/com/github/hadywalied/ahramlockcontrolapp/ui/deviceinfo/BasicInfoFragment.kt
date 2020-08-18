@@ -24,13 +24,14 @@ import kotlinx.android.synthetic.main.fragment_control_panel.*
 
 class BasicInfoFragment : BaseFragment() {
 
+    //region variables
     private lateinit var viewModel: MainViewModel
 
     private val shareprefs by lazy {
         activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
     }
     var delay: Int? = 0
-
+//endregion
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,35 +47,6 @@ class BasicInfoFragment : BaseFragment() {
             findNavController().popBackStack()
         }
         return inflater.inflate(R.layout.fragment_basic_info, container, false)
-    }
-
-    private fun handleBasicInfoResponses(s: String?) {
-        val split: List<String> = s?.split("|")!!
-        when (split.get(0)) {
-            "B" -> {
-                tv_battery.text = split[1]
-            }
-            "LT" -> {
-                if (split[1] == "OK")
-                    Toast.makeText(requireContext(), "Update ${split[1]}", Toast.LENGTH_SHORT)
-                        .show()
-                else delay = when (split[1]) {
-                    "3" -> 0
-                    "5" -> 1
-                    "8" -> 2
-                    else -> 0
-                }
-                seekbar_delay.progress = delay ?: 0
-                text_delay.text = when (delay) {
-                    0 -> "Lock Delay: 3 seconds"
-                    1 -> "Lock Delay: 5 seconds"
-                    2 -> "Lock Delay: 8 seconds"
-                    else -> "Lock Delay: 3 seconds"
-                }
-                shareprefs?.edit()?.putInt(getString(R.string.delay_index), delay ?: 0)?.apply()
-            }
-        }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,5 +93,35 @@ class BasicInfoFragment : BaseFragment() {
         viewModel.sendData(constructSendCommand("GetDelay"))
     }
 
+    //region helper functions
+    private fun handleBasicInfoResponses(s: String?) {
+        val split: List<String> = s?.split("|")!!
+        when (split.get(0)) {
+            "B" -> {
+                tv_battery.text = split[1]
+            }
+            "LT" -> {
+                if (split[1] == "OK")
+                    Toast.makeText(requireContext(), "Update ${split[1]}", Toast.LENGTH_SHORT)
+                        .show()
+                else delay = when (split[1]) {
+                    "3" -> 0
+                    "5" -> 1
+                    "8" -> 2
+                    else -> 0
+                }
+                seekbar_delay.progress = delay ?: 0
+                text_delay.text = when (delay) {
+                    0 -> "Lock Delay: 3 seconds"
+                    1 -> "Lock Delay: 5 seconds"
+                    2 -> "Lock Delay: 8 seconds"
+                    else -> "Lock Delay: 3 seconds"
+                }
+                shareprefs?.edit()?.putInt(getString(R.string.delay_index), delay ?: 0)?.apply()
+            }
+        }
+
+    }
+//endregion
 }
 

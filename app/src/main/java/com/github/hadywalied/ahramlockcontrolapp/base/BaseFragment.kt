@@ -22,12 +22,7 @@ open class BaseFragment : Fragment() {
         init()
 
         model = ViewModelProvider(this@BaseFragment)[MainViewModel::class.java]
-        /*
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                findNavController().popBackStack()
-            }
-        })*/
+
     }
 
     override fun onResume() {

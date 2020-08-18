@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.github.hadywalied.ahramlockcontrolapp.R
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
+import com.github.hadywalied.ahramlockcontrolapp.constructSendCommand
 import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_setup.*
@@ -40,10 +41,14 @@ class SetupFragment : BaseFragment() {
                 findNavController().navigate(R.id.action_setupFragment_to_scanningFragment)
             })
     }
+
     override fun onDetach() {
         super.onDetach()
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.disconnect()
+        if (viewModel.myBleManager?.isConnected!!) {
+            viewModel.sendData(constructSendCommand("Disconnect"))
+            viewModel.disconnect()
+        }
     }
 
 }

@@ -29,11 +29,12 @@ import kotlinx.android.synthetic.main.recycler_layout.*
 
 class UsersFragment : BaseFragment() {
 
+    //region variables
     lateinit var viewModel: MainViewModel
-
     val list = mutableListOf<Users>()
-
     var alertDialog: AlertDialog? = null
+//endregion
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +54,35 @@ class UsersFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_users, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.sendData(constructSendCommand("GetUsers"))
+        toolbar.inflateMenu(R.menu.users_menu)
+        toolbar.setOnMenuItemClickListener { item ->
+            return@setOnMenuItemClickListener when (item.itemId) {
+                R.id.nfc_menu_item -> {
+                    initiateNFCSequence()
+                    true
+                }
+                R.id.add_user_menu_item -> {
+                    initiateAddUserSequence()
+                    true
+                }
+                else -> false
+            }
+        }
+        addDisposable(swipe.refreshes().subscribe {
+            list.clear()
+            viewModel.sendData(constructSendCommand("GetUsers"))
+            Handler(Looper.getMainLooper()).postDelayed({
+                swipe?.isRefreshing = false
+                viewModel.sendData(constructSendCommand("CancelGetUsers"))
+            }, 5000)
+        })
+        updateRecyclerList()
+    }
+
+    //region helper functions
     private fun checkcommand(s: String?) {
         val split: List<String> = s?.split("|")!!
         when (split[0]) {
@@ -120,33 +150,6 @@ class UsersFragment : BaseFragment() {
 
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.sendData(constructSendCommand("GetUsers"))
-        toolbar.inflateMenu(R.menu.users_menu)
-        toolbar.setOnMenuItemClickListener { item ->
-            return@setOnMenuItemClickListener when (item.itemId) {
-                R.id.nfc_menu_item -> {
-                    initiateNFCSequence()
-                    true
-                }
-                R.id.add_user_menu_item -> {
-                    initiateAddUserSequence()
-                    true
-                }
-                else -> false
-            }
-        }
-        addDisposable(swipe.refreshes().subscribe {
-            list.clear()
-            viewModel.sendData(constructSendCommand("GetUsers"))
-            Handler(Looper.getMainLooper()).postDelayed({
-                swipe?.isRefreshing = false
-                viewModel.sendData(constructSendCommand("CancelGetUsers"))
-            }, 5000)
-        })
-        updateRecyclerList()
-    }
 
     private fun initiateAddUserSequence() {
         findNavController().navigate(R.id.action_usersFragment_to_usersScanningFragment)
@@ -166,6 +169,6 @@ class UsersFragment : BaseFragment() {
                 })
         }
     }
-
+//endregion
 
 }

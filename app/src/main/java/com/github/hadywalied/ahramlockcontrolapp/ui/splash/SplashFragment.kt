@@ -21,10 +21,6 @@ import kotlinx.coroutines.*
 
 class SplashFragment : Fragment() {
 
-    private val shareprefs by lazy {
-        activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,9 +61,11 @@ class SplashFragment : Fragment() {
         }
     }
 
-
+    //region helper functions
     private suspend fun checkForFirstTimeUse(): Boolean {
         val repo = Injector.ProvideDevicesRepo(requireContext())
         return repo.getAll().isEmpty()
     }
+    //endregion
+
 }

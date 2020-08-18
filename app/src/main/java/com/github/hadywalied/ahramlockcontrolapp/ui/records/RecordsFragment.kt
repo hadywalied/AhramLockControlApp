@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,8 +32,10 @@ import java.util.concurrent.TimeUnit
 
 class RecordsFragment : BaseFragment() {
 
+    //region variables
     private lateinit var viewModel: MainViewModel
     private lateinit var repo: RecordsRepo
+//endregion
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +43,11 @@ class RecordsFragment : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            findNavController().popBackStack()
+        }
+
         return inflater.inflate(R.layout.fragment_records, container, false)
     }
 
@@ -74,6 +82,7 @@ class RecordsFragment : BaseFragment() {
 
     }
 
+    //region helper functions
     private fun checkCommand(s: String?) {
         val split: List<String> = s?.split("|")!!
         when (split[0]) {
@@ -114,6 +123,7 @@ class RecordsFragment : BaseFragment() {
                 RecordsRecyclerViewAdapter(repo)
         }
     }
+//endregion
 
     override fun onPause() {
         super.onPause()

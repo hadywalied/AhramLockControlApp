@@ -66,6 +66,7 @@ class MainActivity : BaseActivity() {
         Timber.d("Receivers Un Registered")
         viewModel.unRegisterReceivers(this.application)
         if (viewModel.myBleManager?.isConnected!!) {
+            viewModel.sendData(constructSendCommand("Disconnect"))
             viewModel.disconnect()
         }
     }

@@ -22,15 +22,19 @@ import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.rxbinding4.view.clicks
 import kotlinx.android.synthetic.main.fragment_users_scanning.*
+import kotlinx.android.synthetic.main.fragment_users_scanning.scanning_no_devices_found_layout
+import kotlinx.android.synthetic.main.fragment_users_scanning.state_scanning
+import kotlinx.android.synthetic.main.fragment_users_scanning.toolbar
 import kotlinx.android.synthetic.main.info_no_devices_found_layout.*
-import kotlinx.android.synthetic.main.recycler_layout.*
 import java.util.concurrent.TimeUnit
 
 
 class UsersScanningFragment : BaseFragment() {
 
+    //region variables
     lateinit var viewModel: MainViewModel
     private lateinit var repo: DevicesRepo
+//endregion
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +76,7 @@ class UsersScanningFragment : BaseFragment() {
             }, 1200)
         }
         addDisposable(action_refresh.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
-            scanning_recycler_layout.visibility = View.VISIBLE
+            swipe.visibility = View.VISIBLE
             scanning_no_devices_found_layout.visibility = View.GONE
             viewModel.scanUsers()
         })
@@ -80,16 +84,17 @@ class UsersScanningFragment : BaseFragment() {
         state_scanning.visibility = View.VISIBLE
     }
 
+    //region helper functions
     private fun onScanningFinished(bool: Boolean) {
         if (bool)
             state_scanning.visibility = View.VISIBLE
         else state_scanning.visibility = View.INVISIBLE
 
         if (!bool && viewModel.devicesItems.isNullOrEmpty()) {
-            scanning_recycler_layout.visibility = View.GONE
+            swipe.visibility = View.GONE
             scanning_no_devices_found_layout.visibility = View.VISIBLE
         } else {
-            scanning_recycler_layout.visibility = View.VISIBLE
+            swipe.visibility = View.VISIBLE
             scanning_no_devices_found_layout.visibility = View.GONE
         }
     }
@@ -155,6 +160,6 @@ class UsersScanningFragment : BaseFragment() {
         }
 
     }
-
+//endregion
 
 }

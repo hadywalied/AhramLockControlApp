@@ -44,13 +44,13 @@
                     android:id="@+id/chip_admins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Admins Control" />
+                    android:text="Users" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_basic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Basic Info" />
+                    android:text="Lock settings" />
             </com.google.android.material.chip.ChipGroup>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog as AlertDialog
 class SavedDevicesFragment : Fragment() {
 
 
+    //region variables
     private lateinit var viewModel: MainViewModel
     private var alertDialog: AlertDialog? = null
 
@@ -44,7 +45,7 @@ class SavedDevicesFragment : Fragment() {
     private val shareprefs by lazy {
         activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
     }
-
+//endregion
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +67,7 @@ class SavedDevicesFragment : Fragment() {
         toolbar.navigationIcon =
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
+            viewModel.sendData(constructSendCommand("Disconnect"))
             viewModel.disconnect()
             findNavController().popBackStack()
         }
@@ -77,25 +79,7 @@ class SavedDevicesFragment : Fragment() {
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.connectionStateLiveData?.observe(
-            viewLifecycleOwner,
-            Observer { handleConnectionState(it.state) })
-
-        viewModel.bleManagerRecievedData?.observe(viewLifecycleOwner, Observer { checkCommand(it) })
-
-        val recentDevice = SavedDevicesFragmentArgs.fromBundle(requireArguments()).recentDevice
-        if (!viewModel.myBleManager?.isConnected!! && recentDevice != null) {
-            val bluetoothDevice =
-                BluetoothAdapter.getDefaultAdapter().getRemoteDevice(recentDevice.address)
-            viewModel.connect(bluetoothDevice)
-            alertDialog = showConnectingDialog()
-        }
-
-        updateRecyclerList()
-    }
-
+    //region helper functions
     private fun checkCommand(s: String?) {
         val split: List<String> = s?.split("|")!!
         when (split.get(0)) {
@@ -120,12 +104,7 @@ class SavedDevicesFragment : Fragment() {
     private fun handleConnectionState(state: ConnectionState.State) {
         when (state) {
             ConnectionState.State.READY -> {
-                viewModel.sendData(
-                    constructSendCommand(
-                        "Connect",
-                        viewModel.myBleManager?.bluetoothDevice?.address ?: ""
-                    )
-                )
+                sendConnectCommand()
             }
             ConnectionState.State.CONNECTING -> {
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -136,6 +115,7 @@ class SavedDevicesFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                         alertDialog!!.dismiss()
+                        viewModel.sendData(constructSendCommand("Disconnect"))
                         viewModel.disconnect()
                     }
                 }, 3000)
@@ -143,9 +123,20 @@ class SavedDevicesFragment : Fragment() {
             ConnectionState.State.DISCONNECTED -> {
                 alertDialog?.dismiss()
             }
-            else -> {
-            }
+//            ConnectionState.State.INITIALIZING -> sendConnectCommand()
         }
+    }
+
+    private fun sendConnectCommand() {
+        val arguments =
+            viewModel.myBleManager?.bluetoothDevice?.address?.filter { it.isLetterOrDigit() }
+                ?: ""
+        viewModel.sendData(
+            constructSendCommand(
+                "Connect",
+                arguments
+            )
+        )
     }
 
     private fun showConnectingDialog(): AlertDialog {
@@ -161,6 +152,7 @@ class SavedDevicesFragment : Fragment() {
             )
             .setNegativeButton("Cancel") { dialogInterface, i ->
                 dialogInterface.dismiss()
+                viewModel.sendData(constructSendCommand("Disconnect"))
                 viewModel.disconnect()
             }
             .setCancelable(false)
@@ -205,12 +197,33 @@ class SavedDevicesFragment : Fragment() {
                 })
         }
     }
+//endregion
+
+    //region lifecycle handlers
+    override fun onResume() {
+        super.onResume()
+        viewModel.connectionStateLiveData?.observe(
+            viewLifecycleOwner,
+            Observer { handleConnectionState(it.state) })
+
+        viewModel.bleManagerRecievedData?.observe(viewLifecycleOwner, Observer { checkCommand(it) })
+
+        val recentDevice = SavedDevicesFragmentArgs.fromBundle(requireArguments()).recentDevice
+        if (!viewModel.myBleManager?.isConnected!! && recentDevice != null) {
+            val bluetoothDevice =
+                BluetoothAdapter.getDefaultAdapter().getRemoteDevice(recentDevice.address)
+            viewModel.connect(bluetoothDevice)
+            alertDialog = showConnectingDialog()
+        }
+        updateRecyclerList()
+    }
 
     override fun onDetach() {
         super.onDetach()
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.sendData(constructSendCommand("Disconnect"))
         viewModel.disconnect()
     }
-
+//endregion
 
 }

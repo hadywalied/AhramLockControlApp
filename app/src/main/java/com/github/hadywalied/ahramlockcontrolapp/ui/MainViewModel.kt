@@ -22,9 +22,16 @@ import timber.log.Timber
 class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     //region date links
+
+    /**
+     *  the devices list lists up the scanned devices
+     *  @sample BluetoothDevice
+     *  and the devices map is used to map the to the address for quick access.
+     */
     val devicesItems = arrayListOf<Devices>()
     val devicesSet = mutableMapOf<String, BluetoothDevice>()
 
+    //this handles sending the devices list to the UI
     private val _allBluetoothDevicesLiveData = MutableLiveData<List<Devices>>()
     val allBluetoothDevicesLiveData: LiveData<List<Devices>>
         get() = _allBluetoothDevicesLiveData
@@ -37,23 +44,29 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val connectFailedLiveData: LiveData<Boolean>
         get() = _connectFailedLiveData
 
-
+    //this handles the UI Loading State Management
     private val _loadingLiveData = MutableLiveData(false)
     val loadingLiveData: LiveData<Boolean>
         get() = _loadingLiveData
 
-
+    //the Custom BLE Manger is a singleton class btw.
     val myBleManager = getInstance(app)
 
+    /**
+     * @see bleManagerRecievedData
+     * THIS VARIABLE HANDLES INCOMMING DATA AND SENDS IT TO UI
+     */
     val bleManagerRecievedData = myBleManager?.receievedLiveData
-    val bleManagerConnectionState = myBleManager?.connectedLiveData
 
+    // Updates the UI with the connection state
     private val _connectionStateLiveData = myBleManager?.state
     val connectionStateLiveData: LiveData<ConnectionState>?
         get() = _connectionStateLiveData
     //endregion
 
     // region Bluetooth Functions
+
+    //region scaners
     fun scan() {
         _loadingLiveData.postValue(true)
         devicesItems.clear()
@@ -128,6 +141,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 _scanFailedLiveData.postValue(true)
                 super.onScanFailed(errorCode)
             }
+
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 var bool = false
                 for (dev in devicesItems) {
@@ -159,7 +173,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             _loadingLiveData.postValue(false)
         }, 3000)
     }
+    //endregion
 
+    //region connection handling
+    /**
+     * the connect function handles the connection to the BLE Device, notice that it takes a
+     * @param device that is the actual physical BLE device that is scanned
+     */
     fun connect(device: BluetoothDevice) {
         Timber.d("Connect")
         with(myBleManager!!) {
@@ -188,13 +208,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun disconnect() {
         myBleManager?.disconnect()?.enqueue()
     }
+//endregion
 
+    /**
+     * the sendData function sends a string to the BLE device after checking that it's connected.
+     */
     fun sendData(string: String) {
-        if (myBleManager?.isConnected!!) {
+        if (myBleManager?.isConnected == true) {
             myBleManager.sendData(string)
         }
     }
-//endregion
+    //endregion
 
     //region broadcast receivers
     fun registerBroadcastRecievers(app: Application) {
@@ -207,11 +231,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
     }
-    //endregion
 
     fun unRegisterReceivers(app: Application) {
         app.unregisterReceiver(MyBluetoothBroadcastReceiver)
         app.unregisterReceiver(MyLocationBroadcastReceiver)
     }
+    //endregion
 
 }

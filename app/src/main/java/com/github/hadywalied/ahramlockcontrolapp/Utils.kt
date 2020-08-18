@@ -24,7 +24,7 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "S" + "|" + arguments[0] + "|" + arguments[1] + "#"
         }
         "Disconnect" -> {
-            "DC" + "|" + "#"
+            "DC" +  "#"
         }
         "AddUser" -> {
             "AUM" + "|" + arguments[0] + "#"

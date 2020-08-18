@@ -14,7 +14,8 @@ import androidx.navigation.fragment.findNavController
 import com.github.hadywalied.ahramlockcontrolapp.Devices
 import com.github.hadywalied.ahramlockcontrolapp.base.BaseFragment
 import com.github.hadywalied.ahramlockcontrolapp.R
-import com.github.hadywalied.ahramlockcontrolapp.animationsandcustomviews.circularRevealAnimation
+import com.github.hadywalied.ahramlockcontrolapp.circularRevealAnimation
+import com.github.hadywalied.ahramlockcontrolapp.constructSendCommand
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.MainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -69,6 +70,7 @@ class WelcomeScreenFragment : BaseFragment() {
 
     }
 
+    //region helper functions
     private suspend fun addRecentDeviceLayout() {
         if (Injector.ProvideDevicesRepo(requireContext()).getAll().isEmpty()
             || shareprefs?.getString(getString(R.string.shared_device_name), "").isNullOrEmpty()
@@ -118,10 +120,15 @@ class WelcomeScreenFragment : BaseFragment() {
             })
     }
 
+    //endregion
+
     override fun onDetach() {
         super.onDetach()
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        viewModel.disconnect()
+        if (viewModel.myBleManager?.isConnected!!) {
+            viewModel.sendData(constructSendCommand("Disconnect"))
+            viewModel.disconnect()
+        }
     }
 
 }

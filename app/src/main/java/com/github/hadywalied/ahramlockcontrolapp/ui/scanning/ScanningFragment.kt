@@ -43,14 +43,17 @@ import java.util.concurrent.TimeUnit
 
 class ScanningFragment : BaseFragment() {
 
+    //region variables
     private lateinit var viewModel: MainViewModel
     private lateinit var repo: DevicesRepo
     private var qrEader: QREader? = null
     private var alertDialog: AlertDialog? = null
     var permissionGranted = false
+//endregion
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
@@ -79,7 +82,10 @@ class ScanningFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_scanning, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?
+    ) {
         super.onViewCreated(view, savedInstanceState)
         repo = Injector.ProvideDevicesRepo(requireContext())
         viewModel.scan()
@@ -181,16 +187,14 @@ class ScanningFragment : BaseFragment() {
         when (b) {
             ConnectionState.State.READY -> {
                 val devices = Devices(
-                    viewModel.myBleManager?.bluetoothDevice!!.address,
-                    viewModel.myBleManager?.bluetoothDevice!!.name,
+                    viewModel.myBleManager?.bluetoothDevice?.address ?: "",
+                    viewModel.myBleManager?.bluetoothDevice?.name ?: "",
                     0
                 )
-                showConnectionPrompt(devices)
+                if (devices.address.isNotEmpty()) showConnectionPrompt(devices)
             }
             ConnectionState.State.INITIALIZING -> {
                 alertDialog?.dismiss()
-            }
-            ConnectionState.State.CONNECTING -> {
             }
             ConnectionState.State.DISCONNECTED -> {
                 alertDialog?.dismiss()
@@ -211,6 +215,7 @@ class ScanningFragment : BaseFragment() {
             )
             .setNegativeButton("Cancel") { dialogInterface, i ->
                 dialogInterface.dismiss()
+                viewModel.sendData(constructSendCommand("Disconnect"))
                 viewModel.disconnect()
             }
             .setCancelable(false)
@@ -224,6 +229,7 @@ class ScanningFragment : BaseFragment() {
         with(recycler) {
             adapter =
                 DevicesRecyclerViewAdapter(repo, list, {
+                    viewModel.sendData(constructSendCommand("Disconnect"))
                     viewModel.disconnect()
                     connectToDevice(it)
                     alertDialog = showConnectingDialog()
@@ -277,6 +283,7 @@ class ScanningFragment : BaseFragment() {
             setNeutralButton("cancel") { dialogInterface, i ->
                 dialogInterface.dismiss()
                 alertDialog?.dismiss()
+                viewModel.sendData(constructSendCommand("Disconnect"))
                 viewModel.disconnect()
             }
             show()
@@ -330,8 +337,9 @@ class ScanningFragment : BaseFragment() {
             .check()
     }
 
-//endregion
+    //endregion
 
+    //region life cycle handlers
     override fun onResume() {
         super.onResume()
         requestPermissions()
@@ -343,11 +351,11 @@ class ScanningFragment : BaseFragment() {
         qrEader?.releaseAndCleanup()
     }
 
-
     override fun onDetach() {
         super.onDetach()
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.sendData(constructSendCommand("Disconnect"))
         viewModel.disconnect()
     }
-
+//endregion
 }

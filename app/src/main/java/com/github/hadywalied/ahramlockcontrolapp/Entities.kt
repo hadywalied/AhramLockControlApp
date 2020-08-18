@@ -17,7 +17,6 @@ import java.util.*
  * see declarations below
  **/
 
-
 @Parcelize
 @Entity(tableName = "devices")
 data class Devices(

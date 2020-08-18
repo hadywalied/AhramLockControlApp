@@ -37,12 +37,14 @@ import java.util.concurrent.TimeUnit
 
 class ControlPanelFragment : BaseFragment() {
 
+    //region variables
     private lateinit var viewModel: MainViewModel
     private val shareprefs by lazy {
         activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
     }
     var delay: Int? = 0
     var device: Devices? = null
+//endregion
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,6 +88,7 @@ class ControlPanelFragment : BaseFragment() {
         toolbar.navigationIcon =
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
+            viewModel.sendData(constructSendCommand("Disconnect"))
             viewModel.disconnect()
             findNavController().popBackStack()
         }
@@ -118,6 +121,7 @@ class ControlPanelFragment : BaseFragment() {
 
     }
 
+    //region helper functions
     private fun checkCommand(s: String?) {
         val split: List<String> = s?.split("|")!!
         val delayDuration: Long = when (delay) {
@@ -187,10 +191,12 @@ class ControlPanelFragment : BaseFragment() {
             placeholder(R.drawable.ic_lock)
         }
     }
+//endregion
 
     override fun onDetach() {
         super.onDetach()
         val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel.sendData(constructSendCommand("Disconnect"))
         viewModel.disconnect()
     }
 
