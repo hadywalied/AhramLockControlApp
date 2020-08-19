@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,8 @@ import com.github.hadywalied.ahramlockcontrolapp.ui.UsersRecyclerViewAdapter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakewharton.rxbinding4.swiperefreshlayout.refreshes
 import kotlinx.android.synthetic.main.fragment_scanning.*
+import kotlinx.android.synthetic.main.fragment_scanning.toolbar
+import kotlinx.android.synthetic.main.fragment_user_devices.*
 import kotlinx.android.synthetic.main.recycler_layout.*
 
 class UsersFragment : BaseFragment() {
@@ -59,6 +62,11 @@ class UsersFragment : BaseFragment() {
         swipe.isRefreshing = false
         viewModel.sendData(constructSendCommand("GetUsers"))
         toolbar.inflateMenu(R.menu.users_menu)
+        toolbar.navigationIcon =
+            ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
+        toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
         toolbar.setOnMenuItemClickListener { item ->
             return@setOnMenuItemClickListener when (item.itemId) {
                 R.id.nfc_menu_item -> {
