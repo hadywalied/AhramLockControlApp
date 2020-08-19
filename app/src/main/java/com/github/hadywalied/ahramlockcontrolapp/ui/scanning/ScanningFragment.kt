@@ -126,7 +126,10 @@ class ScanningFragment : BaseFragment() {
         when (split.get(0)) {
             "C" -> {
                 when (split[1]) {
-                    "0" -> navigateWhenConnected(UserType.ADMIN)
+                    "0" -> {
+                        viewModel.sendData(constructSendCommand("Sync", getCurrentTimeDate()))
+                        navigateWhenConnected(UserType.ADMIN)
+                    }
                     "1" -> navigateWhenConnected(UserType.USER)
                     "F" -> {
                         alertDialog?.dismiss()

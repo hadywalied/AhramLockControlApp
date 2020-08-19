@@ -19,10 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.github.hadywalied.ahramlockcontrolapp.Devices
-import com.github.hadywalied.ahramlockcontrolapp.R
-import com.github.hadywalied.ahramlockcontrolapp.UserType
-import com.github.hadywalied.ahramlockcontrolapp.constructSendCommand
+import com.github.hadywalied.ahramlockcontrolapp.*
 import com.github.hadywalied.ahramlockcontrolapp.domain.DevicesRepo
 import com.github.hadywalied.ahramlockcontrolapp.domain.Injector
 import com.github.hadywalied.ahramlockcontrolapp.ui.DevicesRecyclerViewAdapter
@@ -87,6 +84,7 @@ class SavedDevicesFragment : Fragment() {
                 alertDialog?.cancel()
                 when (split[1]) {
                     "0" -> {
+                        viewModel.sendData(constructSendCommand("Sync", getCurrentTimeDate()))
                         navigateWhenConnected(UserType.ADMIN)
                     }
                     "1" -> {

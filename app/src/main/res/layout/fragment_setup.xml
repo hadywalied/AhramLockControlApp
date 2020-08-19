@@ -21,34 +21,62 @@
             android:src="@drawable/ahram"
             android:transitionName="@string/transitionName" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@color/orange_700"
-            android:tooltipText="Cylender" />
+            android:layout_weight="4"
+            android:background="?attr/colorPrimary">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@color/blue_700"
-            android:tooltipText="Handle" />
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/vpIntroSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:src="@color/state_connected"
-            android:tooltipText="Third Item" />
+            <com.github.hadywalied.ahramlockcontrolapp.IndicatorLayout
+                android:id="@+id/indicatorLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="80dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                app:indicatorCount="5" />
+
+            <TextView
+                android:id="@+id/tvSkip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:padding="8dp"
+                android:text="Skip"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvNext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackground"
+                android:clickable="true"
+                android:padding="8dp"
+                android:text="Next"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_continue"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:background="@android:color/transparent"
-        android:orientation="horizontal" />
+
 </FrameLayout>

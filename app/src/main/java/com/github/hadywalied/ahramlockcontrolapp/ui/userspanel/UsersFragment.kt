@@ -56,6 +56,7 @@ class UsersFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        swipe.isRefreshing = false
         viewModel.sendData(constructSendCommand("GetUsers"))
         toolbar.inflateMenu(R.menu.users_menu)
         toolbar.setOnMenuItemClickListener { item ->
@@ -94,7 +95,7 @@ class UsersFragment : BaseFragment() {
                 Toast.makeText(requireActivity(), "Users Updated", Toast.LENGTH_SHORT).show()
             }
             "AUC" -> when (split[1]) {
-                "PC" -> {
+                "AE" -> {
                     alertDialog?.cancel()
                     alertDialog = showDialog(1)
                 }
@@ -109,7 +110,7 @@ class UsersFragment : BaseFragment() {
                     updateRecyclerList()
                 }
             }
-            "AUCE" -> {
+            "CAUC" -> {
                 Toast.makeText(requireActivity(), "Operation Canceled", Toast.LENGTH_SHORT).show()
 
             }
@@ -124,9 +125,8 @@ class UsersFragment : BaseFragment() {
             setTitle("Adding a NFC Card")
             when (i) {
                 1 -> {
-                    setMessage("Please pass The Programming Card")
-                    setNeutralButton("cancel") { dialogInterface, i ->
-                        viewModel.sendData(constructSendCommand("CancelAddingNFC"))
+                    setMessage("The Card Already Exists")
+                    setNeutralButton("Dismiss") { dialogInterface, i ->
                         dialogInterface.dismiss()
                     }
                 }

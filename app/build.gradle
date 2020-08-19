@@ -89,7 +89,7 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     //Guava
-    implementation("com.google.guava:guava:29.0-android")
+    implementation('com.google.guava:guava:29.0-jre')
 
     //DI Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -116,10 +116,12 @@ dependencies {
     implementation("io.coil-kt:coil-gif:0.11.0")
 
     //Dexter Live Permissions
-    implementation 'com.karumi:dexter:6.2.0'
+    implementation 'com.karumi:dexter:6.2.1'
 
     //QR Code Scanner and google vision
     implementation 'com.github.nisrulz:qreader:2.1.2'
-    implementation 'com.google.android.gms:play-services-vision:20.1.0'
+    implementation 'com.google.android.gms:play-services-vision:20.1.1'
 
+    //viewpager
+    implementation "androidx.viewpager2:viewpager2:1.0.0"
 }

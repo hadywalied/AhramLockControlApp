@@ -16,7 +16,7 @@ enum class UserType {
  * @param arguments is the inputs to be sent to the bluetooth i.e. the user number and/or MAC address
  **/
 fun constructSendCommand(opCode: String, vararg arguments: String): String {
-    return when (opCode) {
+    var s = when (opCode) {
         "Connect" -> {
             "C" + "|" + arguments[0] + "#"
         }
@@ -24,7 +24,7 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "S" + "|" + arguments[0] + "|" + arguments[1] + "#"
         }
         "Disconnect" -> {
-            "DC" +  "#"
+            "DC" + "#"
         }
         "AddUser" -> {
             "AUM" + "|" + arguments[0] + "#"
@@ -33,19 +33,19 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "AUC" + "#"
         }
         "CancelAddingUser" -> {
-            "AUME" + "#"
+            "CAUM" + "#"
         }
         "CancelAddingNFC" -> {
-            "AUCE" + "#"
+            "CAUC" + "#"
         }
         "RmUser" -> {
             "DU" + "|" + arguments[0] + "#"
         }
         "GetUsers" -> {
-            "U" + "#"
+            "W" + "#"
         }
         "CancelGetUsers" -> {
-            "UE" + "#"
+            "WE" + "#"
         }
         "UnLock" -> {
             "UL" + "#"
@@ -75,6 +75,10 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "E"
         }
     }
+    while (s.length <= 20) {
+        s += "*"
+    }
+    return s
 }
 
 // format is Time: HH:mm:ss
