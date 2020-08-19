@@ -87,11 +87,11 @@ class UsersFragment : BaseFragment() {
     private fun checkcommand(s: String?) {
         val split: List<String> = s?.split("|")!!
         when (split[0]) {
-            "U" -> {
+            "W" -> {
                 list.add(Users(split[1], "User ${split[1]}", split[2]))
                 updateRecyclerList()
             }
-            "UE" -> {
+            "WE" -> {
                 Toast.makeText(requireActivity(), "Users Updated", Toast.LENGTH_SHORT).show()
             }
             "AUC" -> when (split[1]) {
