@@ -87,16 +87,18 @@ class RecordsFragment : BaseFragment() {
         val split: List<String> = s?.split("|")!!
         when (split[0]) {
             "R" -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    repo.recordsDao.insertRecord(
-                        Records(
-                            "${Random().nextInt()}", //TODO get Users Addresses
-                            "User${split[1]}",
-                            getTimeDate(split[2])
+                if (split.size > 2) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        repo.recordsDao.insertRecord(
+                            Records(
+                                "${Random().nextInt()}", //TODO get Users Addresses
+                                "User${split[1]}",
+                                getTimeDate(split[2])
+                            )
                         )
-                    )
+                    }
+                    updateRecyclerList()
                 }
-                updateRecyclerList()
             }
 
         }

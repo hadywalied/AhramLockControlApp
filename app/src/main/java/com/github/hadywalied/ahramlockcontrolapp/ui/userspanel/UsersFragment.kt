@@ -96,8 +96,10 @@ class UsersFragment : BaseFragment() {
         val split: List<String> = s?.split("|")!!
         when (split[0]) {
             "W" -> {
-                list.add(Users(split[1], "User ${split[1]}", split[2]))
-                updateRecyclerList()
+                if (split.size > 2) {
+                    list.add(Users(split[1], "User ${split[1]}", split[2]))
+                    updateRecyclerList()
+                }
             }
             "WE" -> {
                 Toast.makeText(requireActivity(), "Users Updated", Toast.LENGTH_SHORT).show()
