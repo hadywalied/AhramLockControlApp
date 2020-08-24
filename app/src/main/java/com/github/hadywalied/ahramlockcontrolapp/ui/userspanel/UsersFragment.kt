@@ -66,6 +66,7 @@ class UsersFragment : BaseFragment() {
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
+            viewModel.sendData(constructSendCommand("CancelGetUsers"))
         }
         toolbar.setOnMenuItemClickListener { item ->
             return@setOnMenuItemClickListener when (item.itemId) {
