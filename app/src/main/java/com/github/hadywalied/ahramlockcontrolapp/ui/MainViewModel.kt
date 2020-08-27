@@ -131,9 +131,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         val scanner = BluetoothLeScannerCompat.getScanner()
         val settings: ScanSettings =
             ScanSettings.Builder()
-                .setLegacy(false)
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .setUseHardwareBatchingIfSupported(false)
+                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
                 .build()
         val filters: MutableList<ScanFilter> = ArrayList()
         val scanCallback = object : ScanCallback() {
