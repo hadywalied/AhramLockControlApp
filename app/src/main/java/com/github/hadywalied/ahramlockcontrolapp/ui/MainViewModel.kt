@@ -3,6 +3,10 @@ package com.github.hadywalied.ahramlockcontrolapp.ui
 import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.le.BluetoothLeScanner
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
 import android.os.Handler
@@ -19,7 +23,7 @@ import no.nordicsemi.android.ble.livedata.state.ConnectionState
 import no.nordicsemi.android.support.v18.scanner.*
 import timber.log.Timber
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class MainViewModel(val app: Application) : AndroidViewModel(app) {
 
     //region date links
 
@@ -124,16 +128,20 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }, 3750)
     }
 
-    fun scanUsers() {
+    /*fun scanUsers() {
         _loadingLiveData.postValue(true)
         devicesItems.clear()
         devicesSet.clear()
         val scanner = BluetoothLeScannerCompat.getScanner()
         val settings: ScanSettings =
             ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-                .build()
+                .setLegacy(false)
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .setUseHardwareBatchingIfSupported(true)
+                .build();
+
         val filters: MutableList<ScanFilter> = ArrayList()
+
         val scanCallback = object : ScanCallback() {
             override fun onScanFailed(errorCode: Int) {
                 _scanFailedLiveData.postValue(true)
@@ -170,6 +178,50 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             scanner.stopScan(scanCallback)
             _loadingLiveData.postValue(false)
         }, 3000)
+    }*/
+    fun scanUsers() {
+        _loadingLiveData.postValue(true)
+        devicesItems.clear()
+        devicesSet.clear()
+        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+
+        // Create a BroadcastReceiver for ACTION_FOUND.
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                when (intent.action) {
+                    BluetoothDevice.ACTION_FOUND -> {
+                        // Discovery has found a device. Get the BluetoothDevice
+                        // object and its info from the Intent.
+                        val device: BluetoothDevice? =
+                            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                        var bool = false
+                        for (dev in devicesItems) {
+                            if (dev.address == device?.address) {
+                                dev.rssi = 70
+                                bool = true
+                            }
+                        }
+                        if (!bool) {
+                            devicesItems.add(
+                                Devices(
+                                    device?.address!!,
+                                    device.name,
+                                    70
+                                )
+                            )
+                            devicesSet[device.address!!] = device
+                        }
+                        _allBluetoothDevicesLiveData.postValue(devicesItems)
+                        _scanFailedLiveData.postValue(false)
+                    }
+                }
+            }
+        }
+        app.registerReceiver(receiver, filter)
+        bluetoothAdapter.startDiscovery()
+
+        Handler(Looper.getMainLooper()).postDelayed({app.unregisterReceiver(receiver)},2000)
     }
     //endregion
 

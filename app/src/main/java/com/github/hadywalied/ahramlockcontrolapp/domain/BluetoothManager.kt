@@ -127,6 +127,7 @@ abstract class MyCallback : ProfileDataCallback,
             return
         }
         val received = data.getStringValue(0)
+        Timber.d("RECEIVED FROM BLE" + received)
         fromOnDataSent(device, received ?: "")
     }
 
@@ -137,6 +138,7 @@ abstract class MyCallback : ProfileDataCallback,
         }
         val received = data.getStringValue(0)
 //        fromOnDataSent(device, received ?: "")
+        Timber.d("SENT TO BLE" +received)
     }
 }
 

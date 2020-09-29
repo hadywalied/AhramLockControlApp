@@ -75,7 +75,7 @@ fun constructSendCommand(opCode: String, vararg arguments: String): String {
             "E"
         }
     }
-    while (s.length <= 20) {
+    while (s.length <= 19) {
         s += "*"
     }
     return s
