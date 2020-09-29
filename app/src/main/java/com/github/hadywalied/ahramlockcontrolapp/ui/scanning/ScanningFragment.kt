@@ -1,6 +1,7 @@
 package com.github.hadywalied.ahramlockcontrolapp.ui.scanning
 
 import android.Manifest
+import android.bluetooth.*
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -123,7 +124,7 @@ class ScanningFragment : BaseFragment() {
 
     private fun checkCommand(s: String?) {
         val split: List<String> = s?.split("|")!!
-        when (split.get(0)) {
+        when (split[0]) {
             "C" -> {
                 when (split[1]) {
                     "0" -> {
@@ -143,7 +144,7 @@ class ScanningFragment : BaseFragment() {
                 alertDialog?.cancel()
                 qrEader?.stop()
                 if (split[1] == "T") {
-                    viewModel.sendData(constructSendCommand("Sync", getCurrentTimeDate()))
+//                    viewModel.sendData(constructSendCommand("Sync", getCurrentTimeDate()))
                     navigateWhenConnected(UserType.ADMIN)
                 } else {
                     Toast.makeText(requireContext(), "Connection Failed", Toast.LENGTH_SHORT)
@@ -264,7 +265,10 @@ class ScanningFragment : BaseFragment() {
                                 .defaultIfEmpty(value)
                                 .subscribeOn(AndroidSchedulers.mainThread())
                                 .subscribe { s: String ->
-                                    sendAdminCommand(device, s)
+                                    sendAdminCommand(
+                                        BluetoothAdapter.getDefaultAdapter().address,
+                                        s
+                                    )
                                     alertDialog?.dismiss()
                                     alertDialog = showConnectingDialog()
                                     qrEader?.stop()
@@ -279,7 +283,7 @@ class ScanningFragment : BaseFragment() {
 
             }
             setNegativeButton("Connect") { dialogInterface, _ ->
-                sendUserCommand(device)
+                sendUserCommand(BluetoothAdapter.getDefaultAdapter().address)
                 dialogInterface.dismiss()
                 alertDialog = showConnectingDialog()
             }
@@ -301,14 +305,14 @@ class ScanningFragment : BaseFragment() {
             .create()
     }
 
-    private fun sendUserCommand(device: Devices) {
-        val addr = device.address.filter { it.isLetterOrDigit() }
+    private fun sendUserCommand(device: String) {
+        val addr = device.filter { it.isLetterOrDigit() }
         viewModel.sendData(constructSendCommand("Connect", addr))
     }
 
     @UiThread
-    private fun sendAdminCommand(device: Devices, pin: String?) {
-        val addr = device.address.filter { it.isLetterOrDigit() }
+    private fun sendAdminCommand(device: String, pin: String?) {
+        val addr = device.filter { it.isLetterOrDigit() }
         viewModel.sendData(constructSendCommand("Setup", addr, pin ?: "0"))
     }
 

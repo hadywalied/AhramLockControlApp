@@ -48,7 +48,7 @@ class UsersFragment : BaseFragment() {
 
         viewModel.bleManagerRecievedData?.observe(viewLifecycleOwner, Observer { checkcommand(it) })
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            viewModel.sendData(constructSendCommand("CancelGetUsers"))
+//            viewModel.sendData(constructSendCommand("CancelGetUsers"))
             viewModel.sendData(constructSendCommand("CancelAddingUser"))
             viewModel.sendData(constructSendCommand("CancelAddingNFC"))
             findNavController().popBackStack()
@@ -66,7 +66,7 @@ class UsersFragment : BaseFragment() {
             ContextCompat.getDrawable(activity?.applicationContext!!, R.drawable.ic_back)
         toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
-            viewModel.sendData(constructSendCommand("CancelGetUsers"))
+//            viewModel.sendData(constructSendCommand("CancelGetUsers"))
         }
         toolbar.setOnMenuItemClickListener { item ->
             return@setOnMenuItemClickListener when (item.itemId) {
@@ -86,7 +86,7 @@ class UsersFragment : BaseFragment() {
             viewModel.sendData(constructSendCommand("GetUsers"))
             Handler(Looper.getMainLooper()).postDelayed({
                 swipe?.isRefreshing = false
-                viewModel.sendData(constructSendCommand("CancelGetUsers"))
+//                viewModel.sendData(constructSendCommand("CancelGetUsers"))
             }, 5000)
         })
         updateRecyclerList()

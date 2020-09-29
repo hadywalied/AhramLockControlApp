@@ -72,8 +72,8 @@ class UsersScanningFragment : BaseFragment() {
         swipe.setOnRefreshListener {
             viewModel.scanUsers()
             Handler(Looper.getMainLooper()).postDelayed({
-                swipe.isRefreshing = false
-            }, 2500)
+                swipe?.isRefreshing = false
+            }, 5500)
         }
         addDisposable(action_refresh.clicks().throttleFirst(1000, TimeUnit.MILLISECONDS).subscribe {
             swipe.visibility = View.VISIBLE

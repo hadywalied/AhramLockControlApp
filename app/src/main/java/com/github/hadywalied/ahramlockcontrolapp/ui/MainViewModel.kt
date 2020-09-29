@@ -221,7 +221,7 @@ class MainViewModel(val app: Application) : AndroidViewModel(app) {
         app.registerReceiver(receiver, filter)
         bluetoothAdapter.startDiscovery()
 
-        Handler(Looper.getMainLooper()).postDelayed({app.unregisterReceiver(receiver)},2000)
+        Handler(Looper.getMainLooper()).postDelayed({app.unregisterReceiver(receiver)},5000)
     }
     //endregion
 
