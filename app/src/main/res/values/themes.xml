@@ -5,7 +5,7 @@
         <!--customize the theme-->
     </style>
 
-    <style name="Theme.Base" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.Base" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/orange_700</item>
         <item name="colorPrimaryDark">@color/orange_800</item>

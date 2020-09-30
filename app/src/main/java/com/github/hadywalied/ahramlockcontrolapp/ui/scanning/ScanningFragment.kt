@@ -2,6 +2,7 @@ package com.github.hadywalied.ahramlockcontrolapp.ui.scanning
 
 import android.Manifest
 import android.bluetooth.*
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -50,6 +51,9 @@ class ScanningFragment : BaseFragment() {
     private var qrEader: QREader? = null
     private var alertDialog: AlertDialog? = null
     var permissionGranted = false
+    private val shareprefs by lazy {
+        activity?.getSharedPreferences(getString(R.string.sharedprefsfile), Context.MODE_PRIVATE)
+    }
 //endregion
 
     override fun onCreateView(
@@ -306,14 +310,21 @@ class ScanningFragment : BaseFragment() {
     }
 
     private fun sendUserCommand(device: String) {
-        val addr = device.filter { it.isLetterOrDigit() }
-        viewModel.sendData(constructSendCommand("Connect", addr))
+        val arguments =
+            shareprefs?.getString(getString(R.string.phone_number), "")
+        viewModel.sendData(
+            constructSendCommand(
+                "Connect",
+                arguments ?: ""
+            )
+        )
     }
 
     @UiThread
     private fun sendAdminCommand(device: String, pin: String?) {
-        val addr = device.filter { it.isLetterOrDigit() }
-        viewModel.sendData(constructSendCommand("Setup", addr, pin ?: "0"))
+        val arguments =
+            shareprefs?.getString(getString(R.string.phone_number), "") ?: ""
+        viewModel.sendData(constructSendCommand("Setup", arguments, pin ?: "0"))
     }
 
     private fun requestPermissions() {

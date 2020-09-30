@@ -90,6 +90,9 @@
             android:id="@+id/action_usersFragment_to_usersScanningFragment"
             app:destination="@id/usersScanningFragment"
             app:popUpTo="@id/usersFragment" />
+        <action
+            android:id="@+id/action_usersFragment_to_phoneUserFragment"
+            app:destination="@id/phoneUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/setupFragment"
@@ -120,4 +123,9 @@
             android:id="@+id/action_welcomeScreenFragment_to_scanningFragment"
             app:destination="@id/scanningFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/phoneUserFragment"
+        android:name="com.github.hadywalied.ahramlockcontrolapp.ui.userspanel.PhoneUserFragment"
+        android:label="fragment_phone_user"
+        tools:layout="@layout/fragment_phone_user" />
 </navigation>

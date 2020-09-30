@@ -62,5 +62,6 @@
     <string name="shared_device_address">RecentDeviceAddress</string>
     <string name="shared_device_rssi">RecentDeviceRSSI</string>
     <string name="delay_index">delay</string>
+    <string name="phone_number">phone</string>
 
 </resources>

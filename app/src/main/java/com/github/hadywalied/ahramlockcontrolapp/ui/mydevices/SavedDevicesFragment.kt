@@ -127,12 +127,11 @@ class SavedDevicesFragment : Fragment() {
 
     private fun sendConnectCommand() {
         val arguments =
-            viewModel.myBleManager?.bluetoothDevice?.address?.filter { it.isLetterOrDigit() }
-                ?: ""
+            shareprefs?.getString(getString(R.string.phone_number), "")
         viewModel.sendData(
             constructSendCommand(
                 "Connect",
-                arguments
+                arguments ?: ""
             )
         )
     }

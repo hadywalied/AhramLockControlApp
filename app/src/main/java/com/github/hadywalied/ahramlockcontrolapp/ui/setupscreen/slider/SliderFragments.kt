@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.github.hadywalied.ahramlockcontrolapp.R
+import kotlinx.android.synthetic.main.intro_fragment4.*
 
 class FragmentOne : Fragment() {
     override fun onCreateView(
@@ -45,6 +46,7 @@ class FragmentFour : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.intro_fragment4, container, false)
     }
+
 }
 
 class FragmentFive : Fragment() {

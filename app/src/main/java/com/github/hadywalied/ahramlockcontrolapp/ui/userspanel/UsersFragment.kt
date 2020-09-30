@@ -163,7 +163,7 @@ class UsersFragment : BaseFragment() {
 
 
     private fun initiateAddUserSequence() {
-        findNavController().navigate(R.id.action_usersFragment_to_usersScanningFragment)
+        findNavController().navigate(R.id.action_usersFragment_to_phoneUserFragment)
     }
 
     private fun initiateNFCSequence() {

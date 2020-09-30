@@ -3,8 +3,6 @@ package com.github.hadywalied.ahramlockcontrolapp
 import android.content.Context
 import android.provider.Settings
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 enum class UserType {
@@ -18,16 +16,16 @@ enum class UserType {
 fun constructSendCommand(opCode: String, vararg arguments: String): String {
     var s = when (opCode) {
         "Connect" -> {
-            "C" + "|" + arguments[0] + "#"
+            "C" + "|2" + arguments[0] + "#"
         }
         "Setup" -> {
-            "S" + "|" + arguments[0] + "|" + arguments[1] + "#"
+            "S" + "|2" + arguments[0] + "|" + arguments[1] + "#"
         }
         "Disconnect" -> {
             "DC" + "#"
         }
         "AddUser" -> {
-            "AUM" + "|" + arguments[0] + "#"
+            "AUM" + "|2" + arguments[0] + "#"
         }
         "AddNFC" -> {
             "AUC" + "#"
