@@ -102,7 +102,7 @@ class SavedDevicesFragment : Fragment() {
     private fun handleConnectionState(state: ConnectionState.State) {
         when (state) {
             ConnectionState.State.READY -> {
-                sendConnectCommand()
+                Handler(Looper.getMainLooper()).postDelayed({ sendConnectCommand() }, 50)
             }
             ConnectionState.State.CONNECTING -> {
                 Handler(Looper.getMainLooper()).postDelayed({
@@ -155,6 +155,7 @@ class SavedDevicesFragment : Fragment() {
             .setCancelable(false)
             .setView(progressBar).create()
         alertDialog.show()
+//        sendConnectCommand()
         return alertDialog
     }
 
